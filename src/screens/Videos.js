@@ -170,14 +170,6 @@ const Videos = ({ route }) => {
   <TouchableOpacity style={styles.noteButton} onPress={() => setModalVisible(true)}>
   <Text style={styles.noteButtonText}>Add a note</Text>
   </TouchableOpacity>
-  <TextInput
-  style={styles.noteInput}
-  placeholder="Take a note"
-  placeholderTextColor="#a0aec0"
-  value={note}
-  onChangeText={(text) => setNote(text)}
-  multiline={true}
-  />
   </View>
   <View style={styles.notesContainer}>
   <Text style={styles.notesTitle}>Notes</Text>
