@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput,Button, Modal, TouchableOpacity, StyleSheet, Dimensions, Image, Pressable, FlatList } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { FontAwesome } from '@expo/vector-icons';
-
+import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Videos = ({ route }) => {
   let lessonId = route.params.lessonId
   const [selectedRating, setSelectedRating] = useState(0);
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState([]);
   const [video, setVideo] = useState({});
+  const [studentId, setStudentId] = useState('');
+  const [videoId, setVideoId] = useState('');
+  const [videoDataId,setvideoDataId] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const start = 0
   const end = 0
@@ -21,7 +24,15 @@ const Videos = ({ route }) => {
     end = data[0].end_time.split(':').reduce((acc,time) => (60 * acc) + +time);
     console.log(seconds)
   }
-
+  // const saveNotes = async () =>{
+  //   var requestOptions = {
+  //    method: 'POST',
+  //    redirect: 'follow'
+  //    };
+  //   const response= await fetch(`${global.apiURL}student/saveNotes?studentId=${studentId}&notes=${notes}&videoId=${video.v_id}&videoDataId=${videoDataId}`, requestOptions);
+  //   const data = await response.json();
+  //   console.log("DATA", data)
+  //   }
   useEffect(() => {
     // AsyncStorage.setItem('note', note);
   }, [note]);
@@ -36,18 +47,14 @@ const Videos = ({ route }) => {
     //   }
     // });
   }, []);
-  // const toggleModal = () => {
-  //   setModalVisible(!modalVisible);
-  // };
+ 
 
   const handleStarClick = (rating) => {
     console.log(`Selected rating: ${rating}`);
     setSelectedRating(rating);
   };
 
-  // const handleNoteChange = (text) => {
-  //   setNote(text);
-  // };
+ 
   const handleNoteSave = () => {
     if (note) {
     const newNote = {
@@ -67,12 +74,6 @@ const Videos = ({ route }) => {
     };
  return (
     <View style={styles.container}>
-     <Image
-        source={require('./Assets/Icon/search.png')}
-        resizeMode="contain"
-        style={styles.image}
-      />
-
       <View style={styles.videoContainer}>
         <WebView
           // source={{ uri: 'https://www.youtube.com/embed/wOhLyP-SAn0?start=120' }}
@@ -111,31 +112,10 @@ const Videos = ({ route }) => {
           <Text style={styles.eyeIconText}>👀</Text>
         </View>
         <View style={styles.viewCountText}>
-          <Text style={styles.viewCountNumber}>1,234 views</Text>
+          <Text style={styles.viewCountNumber}>234 views</Text>
         </View>
       </View>
       <View>
-      {/* <Button title="Open Modal" onPress={toggleModal} />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput style={styles.modalText}onChangeText={newText => setNotes(newText)}/>
-            <Button title="Save" onPress={toggleModal} />
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal> */}
       <Modal
   animationType="slide"
   transparent={true}
@@ -168,7 +148,9 @@ const Videos = ({ route }) => {
       </View>
       <View style={styles.noteInputContainer}>
   <TouchableOpacity style={styles.noteButton} onPress={() => setModalVisible(true)}>
-  <Text style={styles.noteButtonText}>Add a note</Text>
+  <Text style={styles.noteButtonText}><FontAwesomeIcon name="plus"
+              style={styles.icons}
+            ></FontAwesomeIcon></Text>
   </TouchableOpacity>
   </View>
   <View style={styles.notesContainer}>
@@ -198,9 +180,13 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   videoContainer: {
-    position
-      : 'relative',
-    height: Dimensions.get('window').width * 0.5625, // 16:9 aspect ratio
+    // position
+    //   : 'relative',
+    // height: Dimensions.get('window').width * 0.5595, // 16:9 aspect ratio
+    // backgroundColor: '#000'
+    position: 'relative',
+    height: 160, // fixed pixel value
+    width: '100%', // take full width of the container
     backgroundColor: '#000'
   },
   video: {
@@ -210,6 +196,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0
   },
+  icons:{
+    alignSelf:"center",
+    fontSize: 25,
+    marginTop: 5,
+    bottom:15,
+    borderRadius: 5,
+    paddingHorizontal:55,
+    marginLeft: 250
+  },
   noteInputContainer: {
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -217,20 +212,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#a0aec0',
+    backgroundColor: '#DDF7E3'
     },
     noteButton: {
     padding: 10,
-    backgroundColor: '#f7fafc',
     borderRadius: 5,
     marginRight: 10,
     },
     noteButtonText: {
+    borderRadius: 15,
     color: '#4a5568',
+    backgroundColor: `#C7E8CA`
     },
     noteInput: {
     flex: 1,
     fontSize: 16,
     paddingVertical: 10,
+    backgroundColor: '#DDF7E3'
     },
     notesContainer: {
     flex: 1,
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     },
     noteContainer: {
-    backgroundColor: '#edf2f7',
+    backgroundColor:'#C7E8CA',
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -265,8 +263,8 @@ const styles = StyleSheet.create({
   viewCount: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: 10,
-    marginLeft: 10
+    marginLeft: 10,
+    bottom:19
   },
   eyeIcon: {
     display: 'flex',
@@ -295,73 +293,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#aaa'
   },
-  // noteContainer: {
-  //   margin: 20,
-  //   borderWidth: 1,
-  //   borderColor: '#ccc',
-  //   borderRadius: 5,
-  //   padding: 10
-  // },
-  // noteHeader: {
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: '#aaa',
-  //   paddingBottom: 5,
-  //   marginBottom: 10
-  // },
-  // noteHeaderText: {
-  //   fontSize: 16
-  // },
-  // noteInputContainer: {
-  //   marginBottom: 10
-  // },
-  // noteInput: {
-  //   fontSize: 14
-  // },
-  // saveButtonContainer: {
-  //   display: 'flex',
-  //   alignItems: 'flex-end'
-  // },
-  // saveButton: {
-  //   backgroundColor: '#4285f4',
-  //   borderRadius: 5,
-  //   padding: 10,
-  //   marginTop: 10
-  // },
-  // saveButtonText: {
-  //   color: '#fff',
-  //   fontSize: 16,
-  //   textAlign: 'center'
-  // },
-  // centeredView: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   marginTop: 22,
-  // },
-  // modalView: {
-  //   margin: 20,
-  //   backgroundColor: 'white',
-  //   borderRadius: 20,
-  //   padding: 35,
-  //   alignItems: 'center',
-  //   shadowColor: '#000',
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 2,
-  //   },
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 4,
-  //   elevation: 5,
-  // },
-  // textStyle: {
-  //   color: 'white',
-  //   fontWeight: 'bold',
-  //   textAlign: 'center',
-  // },
-  // modalText: {
-  //   marginBottom: 15,
-  //   textAlign: 'center',
-  // },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -369,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalView: {
-    backgroundColor: '#fff',
+    backgroundColor: '#DDF7E3',
     borderRadius: 5,
     padding: 20,
     alignItems: 'center',
@@ -386,15 +317,16 @@ const styles = StyleSheet.create({
     modalButtonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      
       },
       modalButton: {
-      backgroundColor: '#4a5568',
+      backgroundColor: '#C7E8CA',
       padding: 10,
       borderRadius: 5,
       marginHorizontal: 5,
       },
       modalButtonText: {
-      color: '#fff',
+      color: 'green',
       fontWeight: 'bold',
       },
 });

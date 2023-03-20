@@ -21,9 +21,12 @@ const StudentPanel = ({navigation, route}) => {
 <FlatList
             data={subjects}
             keyExtractor={(item, index) => index}
+            numColumns={2} // Set the number of columns
+        columnWrapperStyle={styles.columnWrapper}
             renderItem={({ item }) => (
             <Pressable onPress={()=>navigation.navigate("MobileApplicationDevelopment",{courseId:item.c_id})}>
             <View style={styles.weekContainer}>
+            <Image source={images[0].src} style={styles.image} />
             <Text style={styles.weekText}>{item.name}</Text>
             </View>
             </Pressable>
@@ -42,13 +45,25 @@ const styles = StyleSheet.create({
       backgroundColor: "#DDF7E3"
       // borderColor: "#000000"
     },
+    columnWrapper: {
+      justifyContent: 'space-between', // Set the alignment between each row
+      paddingHorizontal: 10, // Set the horizontal padding between each item
+      paddingVertical: 10, // Set the vertical padding between each item
+    },
    weekContainer: {
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: 54,
-      left:5,
-      top:15
+      left: 5,
+      top: 15,
+      width: '145%', // Set the width of each item
+      height: 150, // Set the height of each item
+      backgroundColor: '#C7E8CA',
+      marginTop: 20,
+      marginLeft: 9,
+      borderRadius: 10,
+      padding: 9
    },
    image: {
       width: 50,
@@ -57,13 +72,12 @@ const styles = StyleSheet.create({
     },
    weekText: {
       paddingTop:15,
-      paddingLeft:15,
       fontWeight:"bold",
-      width: 350,
-      height: 62,
-      backgroundColor: `#C7E8CA`,
-      marginTop: 30,
-      marginLeft: 6
+      // width: 350,
+      // height: 62,
+      // backgroundColor: `#C7E8CA`,
+      // marginTop: 30,
+      // marginLeft: 6
    }
  });
  

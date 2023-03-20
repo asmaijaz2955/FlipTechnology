@@ -49,9 +49,6 @@ const Login = ({ navigation }) => {
       <View style={{ justifyContent: 'center', alignItems: "center", right: 60 }}>
         <TouchableOpacity style={styles.button}
           onPress={handleLogin}>
-
-
-
           <Text style={styles.login}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -72,12 +69,13 @@ const styles = StyleSheet.create({
     width: 131,
     height: 137,
     marginTop: 43,
+    borderRadius: 3,
     marginLeft: 122
   },
   biitLms: {
     // fontFamily: "roboto-700",
     fontWeight: "bold",
-    color: "#121212",
+    color: "#5D9C59",
     fontSize: 24,
     marginTop: 19,
     alignSelf: "center"
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 300,
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#C7E8CA",
     marginTop: 33,
     marginLeft: 32,
     backgroundColor: "#C7E8CA",
@@ -100,7 +98,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 300,
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#C7E8CA",
     marginTop: 35,
     marginLeft: 32,
     backgroundColor: "#C7E8CA",
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
     height: 65,
     backgroundColor: "#C7E8CA",
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#C7E8CA",
     borderRadius: 26,
     marginTop: 34,
     marginLeft: 140,
@@ -122,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     alignItems: 'center',
     fontWeight: "bold",
-    color: "#121212",
+    color: "#5D9C59",
     marginTop: 13,
     marginLeft: 40
   },
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     height: 65,
     backgroundColor: "#C7E8CA",
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#C7E8CA",
     borderRadius: 26,
     marginTop: 25,
     marginLeft: 160,

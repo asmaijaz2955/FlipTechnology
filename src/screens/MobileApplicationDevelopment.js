@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, Image } from 'react-native';
+import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity,Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Weeks = ({ navigation, route }) => {
    const [currency, setCurrency] = useState('US Dollar');
    const [selectedItem, setselectedItem] = useState('1');
@@ -19,14 +19,21 @@ const Weeks = ({ navigation, route }) => {
    }
    return (
       <View style={styles.container}>
-         <TouchableOpacity>
-            <Text>search</Text>
-         <Image
-        source={require('./Assets/Icon/search.png')}
-        resizeMode="contain"
-        style={styles.image}
-      />
-         </TouchableOpacity>
+        
+        
+<View style={{flexDirection:'row',backgroundColor:'#C7E8CA', alignItems:'center', padding:5, margin:15}}>
+   <TextInput
+   style={{flex:1, marginLeft:40, height:40}}
+   ></TextInput>
+   <TouchableOpacity style={{padding:5}}>
+   <FontAwesomeIcon style={{fontSize: 25}} name="search"
+            />
+   </TouchableOpacity >
+   <TouchableOpacity style={{padding:5}} onPress={() => navigation.navigate("Searching")} >
+             <FontAwesomeIcon style={{fontSize: 25}} name="filter"
+    />
+   </TouchableOpacity>
+</View >
       <View >
          <Picker
             selectedValue={selectedItem}
@@ -91,12 +98,34 @@ const styles = StyleSheet.create({
       height: 27,
       marginLeft: 292
     },
+    Search: {
+      fontSize: 36,
+      marginTop: 5,
+      height:'6%',
+      width: '70%',
+      paddingHorizontal:115,
+      backgroundColor: `#C7E8CA`  
+   },
+   icon3:{
+      // alignSelf:"center",
+      fontSize: 25,
+      marginTop: 5,
+      bottom:15,
+      paddingHorizontal:155,
+      marginLeft: 250
+    },
+    icons:{
+      fontSize: 20,
+      marginTop: 5,
+      //bottom:15,
+      paddingHorizontal:125,
+      marginLeft: 450
+    },
    weekText: {
       fontSize: 16,
       height:'150%',
       width: '90%',
       backgroundColor: `#C7E8CA`
-
    },
    picker: {
       top: 25,
@@ -104,6 +133,5 @@ const styles = StyleSheet.create({
       width: '90%',
       alignSelf:'center',
       backgroundColor: `#C7E8CA`
-
    }
 });
