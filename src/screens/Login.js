@@ -16,7 +16,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("StudentPanel", {user:data})
       }
       else if (data.Role == "Teacher") {
-        navigation.navigate("TeacherPanel", {user:data})
+        navigation.navigate("Subjects", {user:data})
       }
     }
   }

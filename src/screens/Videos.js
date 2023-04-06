@@ -1,86 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput,Button, Modal, TouchableOpacity, StyleSheet, Dimensions, Image, Pressable, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, Dimensions, Image, Pressable, FlatList } from 'react-native';
 import { WebView } from 'react-native-webview';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Videos = ({ route }) => {
   let lessonId = route.params.lessonId
+  let user = route.params.user
+  console.log('user')
   const [selectedRating, setSelectedRating] = useState(0);
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState([]);
   const [video, setVideo] = useState({});
   const [studentId, setStudentId] = useState('');
   const [videoId, setVideoId] = useState('');
-  const [videoDataId,setvideoDataId] = useState('');
+  const [videoDataId, setvideoDataId] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const start = 0
-  const end = 0
+  const [start, setStart] = useState(0)
+  const [end, setEnd] = useState(0)
   const getVideos = async () => {
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
-    const data = await response.json();
-    console.log('DATA Video', data[0])
+    response.json().then(async data =>{
+      console.log('DATA Video', data[0])
     setVideo(data[0])
-    start = data[0].start_time.split(':').reduce((acc,time) => (60 * acc) + +time);
-    end = data[0].end_time.split(':').reduce((acc,time) => (60 * acc) + +time);
-    console.log(seconds)
+    setStart(data[0].start_time.split(':').reduce((acc, time) => (60 * acc) + +time));
+    setEnd(data[0].end_time.split(':').reduce((acc, time) => (60 * acc) + +time));
+    console.log("magic")
+    const response1= await fetch(`${global.apiURL}student/getNotes?studentId=${user.userId}&videoDataId=${data[0].v_data_id}`);
+    const data1 = await response1.json();
+    setNotes(data1)
+    console.log("test Data",data1)
+    });
   }
-  // const saveNotes = async () =>{
-  //   var requestOptions = {
-  //    method: 'POST',
-  //    redirect: 'follow'
-  //    };
-  //   const response= await fetch(`${global.apiURL}student/saveNotes?studentId=${studentId}&notes=${notes}&videoId=${video.v_id}&videoDataId=${videoDataId}`, requestOptions);
-  //   const data = await response.json();
-  //   console.log("DATA", data)
-  //   }
-  useEffect(() => {
-    // AsyncStorage.setItem('note', note);
-  }, [note]);
+  // useEffect(() => {
+  //   // AsyncStorage.setItem('note', note);
+  // }, [note]);
   useEffect(() => {
     getVideos()
   }, []);
-
-  useEffect(() => {
-    // AsyncStorage.getItem('note').then(value => {
-    //   if (value !== null) {
-    //     setNote(value);
-    //   }
-    // });
-  }, []);
- 
 
   const handleStarClick = (rating) => {
     console.log(`Selected rating: ${rating}`);
     setSelectedRating(rating);
   };
 
- 
-  const handleNoteSave = () => {
+
+  const handleNoteSave = async () => {
+    console.log(note, video.v_data_id, video.v_id)
     if (note) {
-    const newNote = {
-    note: note,
-  };
-  setNotes([...notes, newNote]);
-  setNote('');
-  setSelectedRating(0);
-  }
+      const response = await fetch(`${global.apiURL}student/saveNotes?studentId=${user.userId}&notes=${note}&videoId=${video.v_id}&videoDataId=${video.v_data_id}`, {method: "POST"});
+      const data = await response.json();
+      console.log("DATA", data)
+      setNote('');
+      setSelectedRating(0);
+      setModalVisible(!modalVisible);
+    }
   };
   const renderNoteItem = ({ item }) => {
     return (
-    <View style={styles.noteContainer}>
-    <Text style={styles.noteText}>{item.note}</Text>
-    </View>
+      <View style={styles.noteContainer}>
+        <Text style={styles.noteText}>{item.notes}</Text>
+      </View>
     );
-    };
- return (
+  };
+  return (
     <View style={styles.container}>
       <View style={styles.videoContainer}>
         <WebView
           // source={{ uri: 'https://www.youtube.com/embed/wOhLyP-SAn0?start=120' }}
           source={{ uri: `${video.url}?start=${start}&end=${end}` }}
-          // source={{ uri: `${video.url}?start=` }}
-          // source={{ uri: video.url }}
-          // style={styles.video}
+        // source={{ uri: `${video.url}?start=` }}
+        // source={{ uri: video.url }}
+        // style={styles.video}
         />
       </View>
 
@@ -116,51 +106,51 @@ const Videos = ({ route }) => {
         </View>
       </View>
       <View>
-      <Modal
-  animationType="slide"
-  transparent={true}
-  visible={modalVisible}
-  onRequestClose={() => {
-  setModalVisible(!modalVisible);
-  }}>
-  <View style={styles.centeredView}>
-  <View style={styles.modalView}>
-  <TextInput
-  style={styles.modalInput}
-  placeholder="Add a note"
-  placeholderTextColor="#a0aec0"
-  value={note}
-  onChangeText={(text) => setNote(text)}
-  multiline={true}
-  />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Add a note"
+                placeholderTextColor="#a0aec0"
+                value={note}
+                onChangeText={(text) => setNote(text)}
+                multiline={true}
+              />
 
-  <View style={styles.modalButtonContainer}>
-  <Pressable style={styles.modalButton} onPress={() => handleNoteSave()}>
-  <Text style={styles.modalButtonText}>Save</Text>
-  </Pressable>
-  <Pressable style={styles.modalButton} onPress={() => setModalVisible(!modalVisible)}>
-  <Text style={styles.modalButtonText}>Cancel</Text>
-  </Pressable>
-  </View>
-  </View>
-  </View>
-  </Modal>
+              <View style={styles.modalButtonContainer}>
+                <Pressable style={styles.modalButton} onPress={() => handleNoteSave()}>
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </Pressable>
+                <Pressable style={styles.modalButton} onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
       <View style={styles.noteInputContainer}>
-  <TouchableOpacity style={styles.noteButton} onPress={() => setModalVisible(true)}>
-  <Text style={styles.noteButtonText}><FontAwesomeIcon name="plus"
-              style={styles.icons}
-            ></FontAwesomeIcon></Text>
-  </TouchableOpacity>
-  </View>
-  <View style={styles.notesContainer}>
-  <Text style={styles.notesTitle}>Notes</Text>
-<FlatList
-data={notes}
-renderItem={renderNoteItem}
-keyExtractor={(item, index) => index.toString()}
-/>
-</View>
+        <TouchableOpacity style={styles.noteButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.noteButtonText}><FontAwesomeIcon name="plus"
+            style={styles.icons}
+          ></FontAwesomeIcon></Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.notesContainer}>
+        <Text style={styles.notesTitle}>Notes</Text>
+        <FlatList
+          data={notes}
+          renderItem={renderNoteItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
     </View>
   );
 };
@@ -196,13 +186,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0
   },
-  icons:{
-    alignSelf:"center",
+  icons: {
+    alignSelf: "center",
     fontSize: 25,
     marginTop: 5,
-    bottom:15,
+    bottom: 15,
     borderRadius: 5,
-    paddingHorizontal:55,
+    paddingHorizontal: 55,
     marginLeft: 250
   },
   noteInputContainer: {
@@ -213,42 +203,42 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#a0aec0',
     backgroundColor: '#DDF7E3'
-    },
-    noteButton: {
+  },
+  noteButton: {
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
-    },
-    noteButtonText: {
+  },
+  noteButtonText: {
     borderRadius: 15,
     color: '#4a5568',
     backgroundColor: `#C7E8CA`
-    },
-    noteInput: {
+  },
+  noteInput: {
     flex: 1,
     fontSize: 16,
     paddingVertical: 10,
     backgroundColor: '#DDF7E3'
-    },
-    notesContainer: {
+  },
+  notesContainer: {
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    },
-    notesTitle: {
+  },
+  notesTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    },
-    noteContainer: {
-    backgroundColor:'#C7E8CA',
+  },
+  noteContainer: {
+    backgroundColor: '#C7E8CA',
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
-    },
-    noteText: {
+  },
+  noteText: {
     fontSize: 16,
-    },
+  },
   ratingContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -264,7 +254,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     marginLeft: 10,
-    bottom:19
+    bottom: 19
   },
   eyeIcon: {
     display: 'flex',
@@ -298,14 +288,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    modalView: {
+  },
+  modalView: {
     backgroundColor: '#DDF7E3',
     borderRadius: 5,
     padding: 20,
+    margin: 5,
     alignItems: 'center',
-    },
-    modalInput: {
+  },
+  modalInput: {
     borderWidth: 1,
     borderColor: '#a0aec0',
     borderRadius: 5,
@@ -313,22 +304,22 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlignVertical: 'top',
     marginBottom: 10,
-    },
-    modalButtonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      
-      },
-      modalButton: {
-      backgroundColor: '#C7E8CA',
-      padding: 10,
-      borderRadius: 5,
-      marginHorizontal: 5,
-      },
-      modalButtonText: {
-      color: 'green',
-      fontWeight: 'bold',
-      },
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
+  modalButton: {
+    backgroundColor: '#C7E8CA',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  modalButtonText: {
+    color: 'green',
+    fontWeight: 'bold',
+  },
 });
 
 export default Videos;

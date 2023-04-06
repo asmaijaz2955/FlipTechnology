@@ -9,6 +9,7 @@ import SubjectWeeks from "../SubjectWeeks";
 import ListofTopics from "../ListofTopics";
 import Videos from "../Videos";
 import Searching from "../Searching";
+import Subjects from "../Subjects";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import UploadVideo from "../UploadVideo";
 import Presentation from "../Presentation";
@@ -38,6 +39,7 @@ const HomeStackScreen = ({navigation}) => {
           <HomeStack.Screen name="Videos" component={Videos} />
           <HomeStack.Screen name="UploadVideo" component={UploadVideo} />
           <HomeStack.Screen name="Searching" component={Searching} />
+          <HomeStack.Screen name="Subjects" component={Subjects} />
           {/* <HomeStack.Screen name="Presentation" component={Presentation} /> */}
         </HomeStack.Navigator>
       );

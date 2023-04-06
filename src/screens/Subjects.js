@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, ScrollView, FlatList, Pressable, Image } from "react-native";
-const StudentPanel = ({ navigation, route }) => {
+const Subjects = ({ navigation, route }) => {
    const [subjects, setsubjects] = useState([]);
    const [images, setimages] = useState([{ src: require('./Assets/Images/sub.png'), key: '1' }]);
    let user = route.params.user;
+   let teacherId = route.params.teacherId
    console.log(user)
    useEffect(() => {
-      getAllSubjects();
+      getTeachingSubjects();
    }, [])
-   const getAllSubjects = async () => {
-      const response = await fetch(`${global.apiURL}student/getEnrollSubjects?userId=${user.Id}`)
+   const getTeachingSubjects = async () => {
+      const response = await fetch(`${global.apiURL}teacher/getTeachingSubjects?teacherId=${user.userId}`)
       const courses = await response.json();
       console.log("course",courses)
       setsubjects(courses)
@@ -24,7 +25,7 @@ const StudentPanel = ({ navigation, route }) => {
             numColumns={2} // Set the number of columns
             columnWrapperStyle={styles.columnWrapper}
             renderItem={({ item }) => (
-               <Pressable onPress={() => navigation.navigate("MobileApplicationDevelopment", { user:user ,courseId: item.c_id })}>
+               <Pressable onPress={() => navigation.navigate("TeacherPanel", { user:user ,courseId: item.c_id })}>
                   <View style={styles.weekContainer}>
                      <Image source={images[0].src} style={styles.image} />
                      <Text style={styles.weekText}>{item.name}</Text>
@@ -81,4 +82,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default StudentPanel;
+export default Subjects;

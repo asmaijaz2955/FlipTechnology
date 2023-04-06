@@ -7,12 +7,16 @@ const Weeks = ({ navigation, route }) => {
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
    let courseId = route.params.courseId
+   console.log("courseId",courseId)
+   let user = route.params.user
    useEffect(() => {
       getTopics();
    }, [selectedItem])
    const getTopics = async () => {
+      console.log('Selected Item', selectedItem)
+      console.log('CourseId', courseId)
       // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
-      const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
+      const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=week${selectedItem}`)
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
@@ -66,7 +70,7 @@ const Weeks = ({ navigation, route }) => {
             data={topic}
             keyExtractor={(item, index) => index}
             renderItem={({ item }) => (
-               <Pressable onPress={() => navigation.navigate("Videos", {lessonId:item.less_id})}>
+               <Pressable onPress={() => navigation.navigate("Videos", {lessonId:item.less_id, user: user})}>
                   <View style={styles.weekContainer} >
                      <Text style={styles.weekText}>{item.topic_name}</Text>
                   </View>
