@@ -5,8 +5,10 @@ import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommun
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Videos = ({ route }) => {
   let lessonId = route.params.lessonId
+  // let lessonId = route.params
+  // console.log('params', lessonId)
   let user = route.params.user
-  console.log('user')
+  // console.log('user')
   const [selectedRating, setSelectedRating] = useState(0);
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState([]);
@@ -18,9 +20,12 @@ const Videos = ({ route }) => {
   const [start, setStart] = useState(0)
   const [end, setEnd] = useState(0)
   const getVideos = async () => {
+    // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
     response.json().then(async data =>{
       console.log('DATA Video', data[0])
+      setvideoDataId(data[0].v_data_id)
+      setStudentId()
     setVideo(data[0])
     setStart(data[0].start_time.split(':').reduce((acc, time) => (60 * acc) + +time));
     setEnd(data[0].end_time.split(':').reduce((acc, time) => (60 * acc) + +time));
@@ -38,8 +43,23 @@ const Videos = ({ route }) => {
     getVideos()
   }, []);
 
-  const handleStarClick = (rating) => {
+  const handleStarClick = async (rating) => {
     console.log(`Selected rating: ${rating}`);
+    // var raw = JSON.stringify({
+    //   "videoId": video.v_id,
+    //   "videoDataId": videoDataId,
+    //   "rate": rating,
+    //   "studentId": user.userId
+    // });
+    var requestOptions = {
+      method: 'POST',
+      redirect: 'follow'
+    };
+    
+    fetch(`${global.apiURL}student/rate_video?videoId=${video.v_id}&videoDataId=${videoDataId}&rate=${rating}&studentId=${user.userId}`, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log("response", result))
+      .catch(error => console.log('error', error));
     setSelectedRating(rating);
   };
 
@@ -75,27 +95,21 @@ const Videos = ({ route }) => {
       </View>
 
       <View style={styles.ratingContainer}>
-        {[1, 2, 3, 4, 5].map((rating) => (
-          <TouchableOpacity
-            key={rating}
-            style={[
-              styles.ratingStar,
-              {
-                color: rating <= selectedRating ? '#FFD700' : '#ccc'
-              }
-            ]}
-            onPress={() => handleStarClick(rating)}
-            onMouseEnter={(event) => {
-              event.target.style.color = '#FFD700';
-            }}
-            onMouseLeave={(event) => {
-              event.target.style.color = rating <= selectedRating ? '#FFD700' : '#ccc';
-            }}
-          >
-            <Text>&#9733;</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {[1, 2, 3, 4, 5].map((rating) => (
+        <TouchableOpacity
+          key={rating}
+          style={[
+            styles.ratingStar,
+            {
+              color: rating <= selectedRating ? '#ffc107' : '#ccc'
+            }
+          ]}
+          onPress={() => handleStarClick(rating)}
+        >
+          <Text>&#9733;</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
 
       <View style={styles.viewCount}>
         <View style={styles.eyeIcon}>
@@ -168,6 +182,14 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  ratingStar: {
+    fontSize: 30,
+    marginRight: 5
   },
   videoContainer: {
     // position

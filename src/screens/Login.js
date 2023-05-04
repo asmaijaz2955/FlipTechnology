@@ -16,7 +16,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("StudentPanel", {user:data})
       }
       else if (data.Role == "Teacher") {
-        navigation.navigate("Subjects", {user:data})
+        navigation.navigate("Courses", {user:data})
       }
     }
   }
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderWidth: 1,
-    backgroundColor: "#DDF7E3"
     // borderColor: "#000000"
   },
   image: {
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
   biitLms: {
     // fontFamily: "roboto-700",
     fontWeight: "bold",
-    color: "#5D9C59",
+    color: '#224B0C',
     fontSize: 24,
     marginTop: 19,
     alignSelf: "center"
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
     borderColor: "#C7E8CA",
     marginTop: 33,
     marginLeft: 32,
-    backgroundColor: "#C7E8CA",
+    backgroundColor: "#C1D5A4",
     borderRadius: 15,
   },
   password: {
@@ -101,14 +100,14 @@ const styles = StyleSheet.create({
     borderColor: "#C7E8CA",
     marginTop: 35,
     marginLeft: 32,
-    backgroundColor: "#C7E8CA",
+    backgroundColor: "#C1D5A4",
     borderRadius: 15,
   },
   button: {
     alignSelf:'center',
     width: 150,
     height: 65,
-    backgroundColor: "#C7E8CA",
+    backgroundColor: '#224B0C',
     borderWidth: 1,
     borderColor: "#C7E8CA",
     borderRadius: 26,
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     alignItems: 'center',
     fontWeight: "bold",
-    color: "#5D9C59",
+    color: "white",
     marginTop: 13,
     marginLeft: 40
   },

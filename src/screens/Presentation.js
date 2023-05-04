@@ -1,166 +1,145 @@
-import React, {useState} from 'react';
-import CheckBox from 'react-native-check-box';
-import { Text, Image, View, StyleSheet, TextInput, TouchableOpacity  } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image,Modal } from 'react-native';
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Presentation=( { navigation })=>{
-    // const [isSelected, setSelection] = useState();
-    const [agree,  setAgree] = useState(false);
-
-    return(
-
-
-        <View style={styles.container}>
-
-            <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newItem, setNewItem] = useState('');
+  const [Question, setQuestion] = useState('');
+  const [optionA, setoptionA] = useState('');
+  const [optionB, setoptionB] = useState('');
+  const [optionC, setoptionC] = useState('');
+  const [optionD, setoptionD] = useState('');
+  const [items, setItems] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const addNewQuizQuestion = () => {
+    const newQuestion = {
+      question: Question,
+      options: [optionA, optionB, optionC, optionD]
+    };
+    setNotes([...notes, newQuestion]);
+    setQuestion('');
+    setoptionA('');
+    setoptionB('');
+    setoptionC('');
+    setoptionD('');
+    setModalVisible(false);
+};
+  const renderNoteItem = () => {
+    setItems([...items, newItem]);
+    setNewItem('');
+    setModalVisible(false);
+  };
+  return(
+  <View style={styles.container}>
+    <View style={styles.weekContainer} >
+    <TouchableOpacity style={{height: '100%',fontWeight: "bold",color: "#5D9C59",}}
+           onPress={() => {
+            console.log("presssed")
+            setModalVisible(true)
+            }}>
+            <FontAwesomeIcon style={{fontSize: 35,left:300,top:20,color:'green'}} name="plus" />
+          </TouchableOpacity>
+          <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+               <Text style={{color: "#5D9C59",fontSize: 20}}>Quiz</Text>      
+        <TextInput placeholder="Question" style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA"}} value={Question}
+          onChangeText={text => setQuestion(text)}/>      
+        <TextInput placeholder="Option A" style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA", marginTop:-0}} value={optionA}
+          onChangeText={text => setoptionA(text)}/>
+              <TextInput placeholder="Option B" style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA", marginTop:-0}} value={optionB}
+          onChangeText={text => setoptionB(text)}/>
+              <TextInput placeholder="Option C" style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA", marginTop:-0}} value={optionC}
+          onChangeText={text => setoptionC(text)}/>
+            <TextInput placeholder="Option D" style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA", marginTop:-0}} value={optionD}
+          onChangeText={text => setoptionD(text)}/>
+              <View style={styles.modalButtonContainer}>
+                <Pressable style={styles.modalButton} onPress={() =>addNewQuizQuestion()}>
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
         
-       />
-         </View>
-         </View>
-         </View>
-         <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
-        
-       />
-       </View>
-         </View>
-         </View>
-         <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
-        
-       />
-       </View>
-         </View>
-         </View>
-         <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
-        
-       />
-       </View>
-         </View>
-         </View>
-         <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
-        
-       />
-       </View>
-         </View>
-         </View>
-         <View style={styles.button}>
-           <TouchableOpacity onPress={() => navigation.navigate('UploadVideo')}>
-               <Text style={styles.aftabKhan}>Week 1</Text>
-               </TouchableOpacity>
-         <View style={{ flexDirection: "column", marginLeft: 340,bottom:20 }}>
-                  <View style={styles.checkboxContainer}>
-               <CheckBox  style={styles.checkbox}
-          value={ agree}
-          onClick={() => setAgree(!agree) }
-        
-       />
-       </View>
-         </View>
-         </View>
-         <View style={{justifyContent:'center',alignItems:"center",right:70}}>
-    <TouchableOpacity style={styles.button1}
-    onPress={() => navigation.navigate('Presentation')}>
-        <Text style={styles.Save}>Save</Text>
-      </TouchableOpacity>
+        <FlatList
+  data={notes}
+  renderItem={({ item, index }) => (
+    <View style={{ padding: 10 }}>
+      <Text>{index + 1}. {item.question}</Text>
+      <Text style={{ marginLeft: 10 }}>A. {item.options[0]}</Text>
+      <Text style={{ marginLeft: 10 }}>B. {item.options[1]}</Text>
+      <Text style={{ marginLeft: 10 }}>C. {item.options[2]}</Text>
+      <Text style={{ marginLeft: 10 }}>D. {item.options[3]}</Text>
+    </View>
+  )}
+  keyExtractor={(item, index) => index.toString()}
+/>
         </View>
-         </View>
-    );
+       
+  </View>
+  );
 }
 const styles = StyleSheet.create({
-    container: {
-       top: 40,
-       
-    },
-    button1: {
-        width: 120,
-        height: 55,
-        backgroundColor: "#E6E6E6",
-        borderWidth: 1,
-        borderColor: "#000000",
-        borderRadius: 26,
-        marginTop: 30,
-        marginLeft: 120,
-       
-      },
-      Save: {
-     fontSize:22,
-       fontWeight:"bold",
-        color: "#121212",
-        marginTop: 15,
-        marginLeft: 35,
-      },
-    button: {
-       width: 370,
-       height: 42,
-    //    alignItems:'center',
-       backgroundColor: `#32cd32`,
-       marginTop: 20,
-       marginLeft: 10,
-    },
-    wrapper:{
-        padding: 1,
-        paddingTop:80,
-        paddingBottom: 80,
-        paddingLeft: 20,
-        //paddingRight:3,
-        
-       
-     
-      },
-      wrapperText:{
-        fontFamily: "bold",
-        color:"black",
-        fontSize: 20,
-      },
-    aftabKhan: {
-       fontFamily: "roboto-regular",
-       color: "#121212",
-       marginTop: 13,
-       marginLeft: 25
-    },
-    checkboxContainer: {
-            flexDirection: 'row',
-            marginBottom: 20,
-          },
-          checkbox: {
-            alignSelf: 'center',
-          },
-        });
-export default Presentation;
+  container: {
+     flex: 1,
+     borderWidth: 1,
+     backgroundColor: "#DDF7E3"
+     // borderColor: "#000000"
+  },
+  weekContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     justifyContent: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    backgroundColor: '#DDF7E3',
+    borderRadius: 5,
+    padding: 20,
+    margin: 5,
+    alignItems: 'center',
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#a0aec0',
+    borderRadius: 5,
+    height: 100,
+    padding: 10,
+    textAlignVertical: 'top',
+    marginBottom: 10,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
+  modalButton: {
+    backgroundColor: '#C7E8CA',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    bottom:-10
+  },
+  modalButtonText: {
+    color: 'green',
+    fontWeight: 'bold',
+  }
+});
+ export default Presentation;

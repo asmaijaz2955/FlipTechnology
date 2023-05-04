@@ -1,96 +1,152 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, Dimensions, Image, Pressable, FlatList } from 'react-native';
 import { WebView } from 'react-native-webview';
-import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Slider from '@react-native-community/slider';
 const UploadVideo = ({ route }) => {
-  const [sliderValue, setSliderValue] = useState(0);
-  const[ play, setPlay]=useState('');
-  const[ url, setUrl]=useState('');
-  const [newItem, setNewItem] = useState('');
-  const [items, setItems] = useState([]);
-  const handleVideo=()=>{
-    setUrl(play)
-  }
+  const { teacherId, courseId } = route.params
+  const [url, setUrl] = useState('');
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+  const [topic, setTopic] = useState('');
+  const [metaData, setMetaData] = useState([]);
   const addItem = () => {
-    if (newItem.trim()) {
-      setItems([...items, newItem]);
-      setNewItem('');
+    const obj = {
+      TopicName: topic,
+      StartTime: startTime,
+      EndTime: endTime
     }
-  }; 
+    setMetaData([...metaData, obj])
+  }
+  const handleSave = async () => {
+    // console.log(url)
+    // console.log(teacherId)
+    // console.log(courseId)
+    // console.log(metaData)
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "Url": url,
+      "TeacherId": teacherId,
+      "CourseId": courseId,
+      "MetaData": metaData
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    const response = await fetch(`${global.apiURL}/teacher/saveVideoAndMetaData`, requestOptions)
+    const data = await response.json()
+    console.log('RES', data)
+    setMetaData([])
+    setUrl('')
+    setEndTime(0)
+    setStartTime(0)
+    setTopic('')
+    // .then(response => response.text())
+    // .then(result => console.log(result))
+    // .catch(error => console.log('error', error));
+
+  }
   return (
     <View style={styles.container}>
       <View style={styles.urlRow}>
-<Text style={styles.url}>url:</Text>
-<TouchableOpacity style={styles.button} onPress={handleVideo}>
-<Text style={styles.play}>Play</Text>
-</TouchableOpacity>
-</View>
-<View style={styles.urlRowFiller}>
-<TextInput placeholder="url" style={styles.textInput}
-onChangeText={newplay => setPlay(newplay)}></TextInput>
-</View>
+        <Text style={styles.url}>url:</Text>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.play}>Play</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.urlRowFiller}>
+        <TextInput placeholder="url" style={styles.textInput}
+          onChangeText={text => setUrl(text)}></TextInput>
+      </View>
       <View style={styles.videoContainer}>
         <WebView
-          // source={{ uri: 'https://www.youtube.com/embed/wOhLyP-SAn0?start=120' }}
           source={{ uri: url }}
-        // source={{ uri: `${video.url}?start=` }}
-        // source={{ uri: video.url }}
-        // style={styles.video}
         />
       </View>
       <View style={styles.noteInputContainer}>
         <View>
-        <Text>Start Time:</Text>
-      <Slider style={styles.slider}
-              value={sliderValue}
-              onValueChange={value => setSliderValue(value)}
-              // style={{width: 200, height: 40}}
-              minimumValue={0}
-              maximumValue={10}
-              minimumTrackTintColor={styles.primary}
-              maximumTrackTintColor={styles.secondary}
-            />
-               <Text>End Time:</Text>
-     <Slider style={styles.slider1}
-              value={sliderValue}
-              onValueChange={value => setSliderValue(value)}
-              // style={{width: 200, height: 40}}
-              minimumValue={0}
-              maximumValue={10}
-              minimumTrackTintColor={styles.primary}
-              maximumTrackTintColor={styles.secondary}
-            />
-            </View>
-            </View>
-            <View style={{flexDirection:'row',backgroundColor:'#C7E8CA', alignItems:'center', padding:5, margin:15,top:35}}>
+          <Text style={{marginTop:25}} >Start Time:{startTime}</Text>
+          <Slider style={styles.slider}
+            value={startTime}
+            onValueChange={value => setStartTime(value)}
+            // style={{width: 200, height: 40}}
+            minimumValue={0}
+            maximumValue={10}
+            minimumTrackTintColor={styles.primary}
+            maximumTrackTintColor={styles.secondary}
+          />
+          <Text style={{marginTop:15}} >End Time:{endTime}</Text>
+          <Slider style={styles.slider1}
+            value={endTime}
+            onValueChange={value => setEndTime(value)}
+            // style={{width: 200, height: 40}}
+            minimumValue={5}
+            maximumValue={10}
+            minimumTrackTintColor={styles.primary}
+            maximumTrackTintColor={styles.secondary}
+          />
+        </View>
+      </View>
+      <View style={styles.topicInputContainer}>
+        <Text style={styles.topicLabel}>Topic:</Text>
         <TextInput
-          style={{flex:1, marginLeft:40, height:40}}
-          value={newItem}
-          onChangeText={text => setNewItem(text)}
-          placeholder="Enter new item"
+          style={styles.topicInput}
+          placeholder="Enter topic"
+          value={topic}
+          onChangeText={setTopic}
         />
-       <TouchableOpacity style={{padding:5}} onPress={addItem}>
-             <FontAwesomeIcon style={{fontSize: 25}} name="plus"
-    />
+        <TouchableOpacity style={styles.addButton} onPress={addItem}>
+          <FontAwesomeIcon style={styles.addIcon} name="plus" />
         </TouchableOpacity>
       </View>
       <FlatList
-        data={items}
-        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+        data={metaData}
         keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.metaDataItem}>
+            <Text style={styles.metaDataTopic}>{item.TopicName}</Text>
+            <Text style={styles.metaDataTime}>
+              Start Time: {item.StartTime} - End Time: {item.EndTime}
+            </Text>
+          </View>
+        )}
       />
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Save</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
+export default UploadVideo;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DDF7E3'
-
+    backgroundColor: '#DDF7E3',
+    borderWidth: 1,
   },
+  item: {
+    backgroundColor: '#C7E8CA',
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 16,
+    top: 15
+  },
+  itemTopic: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemTime: {
+    fontSize: 16,
+  },
+
   header: {
     display: 'flex',
     justifyContent: 'center',
@@ -100,16 +156,12 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   videoContainer: {
-    // position
-    //   : 'relative',
-    // height: Dimensions.get('window').width * 0.5595, // 16:9 aspect ratio
-    // backgroundColor: '#000'
     position: 'relative',
     height: 160, // fixed pixel value
     width: '100%', // take full width of the container
-    marginTop: -375,
+    marginTop: -325,
     backgroundColor: '#000',
-    top:25
+    top: 25
   },
   video: {
     position: 'absolute',
@@ -118,13 +170,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0
   },
-  slider:{
-    flexDirection:'row',
-    width:300,
+  noteInputContainer: {
+    marginBottom: -8,
+    },
+  slider: {
+    flexDirection: 'row',
+    width: 350,
+    bottom:-10
   },
-  slider1:{
-    flexDirection:'column',
-    width:300,
+  slider1: {
+    flexDirection: 'column',
+    width: 360,
+    bottom:-10
   },
   primary: {
     backgroundColor: '#C7E8CA',
@@ -132,66 +189,43 @@ const styles = StyleSheet.create({
   secondary: {
     backgroundColor: '#C7E8CA',
   },
-  icons: {
-    alignSelf: "center",
-    fontSize: 25,
-    marginTop: 5,
-    bottom: 15,
-    borderRadius: 5,
-    paddingHorizontal: 55,
-    marginLeft: 250
-  },
-  noteInputContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+  topicInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#a0aec0',
-    backgroundColor: '#DDF7E3',
-    top:40
-  },
-  noteButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  noteButtonText: {
-    borderRadius: 15,
-    color: '#4a5568',
-    backgroundColor: `#C7E8CA`
-  },
-  noteInput: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 10,
-    backgroundColor: '#DDF7E3'
-  },
-  notesContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  notesTitle: {
-    fontSize: 20,
+    marginBottom: 10,
+    },
+    topicLabel: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  noteContainer: {
-    backgroundColor: '#C7E8CA',
-    padding: 10,
+    marginRight: 10,
+    marginTop:30
+    },
+    topicInput: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#DDD',
     borderRadius: 5,
-    marginBottom: 10,
-  },
-  noteText: {
-    fontSize: 16,
-  },
+    paddingLeft: 10,
+    marginRight: 10,
+    marginTop:30
+    },
+    addButton: {
+    backgroundColor: '#5D9C59',
+    padding: 10,
+    borderRadius: 15,
+    marginTop:30
+    },
+    addIcon: {
+    color: '#FFF',
+    fontSize: 20,
+    },
   url: {
     color: "#5D9C59",
     marginTop: -75,
     fontSize: 35
-    },
-    button: {
+  },
+  button: {
     width: 64,
     height: 59,
     marginTop: -75,
@@ -199,72 +233,66 @@ const styles = StyleSheet.create({
     borderColor: "#C7E8CA",
     borderRadius: 26,
     marginLeft: 218
-    },
-    play: {
+  },
+  play: {
     fontFamily: "roboto-700",
     color: "#5D9C59",
-    fontSize: 20, 
-    marginTop:12,
+    fontSize: 20,
+    marginTop: 12,
     marginLeft: 13
   },
   urlRow: {
-  height: 59,
-  flexDirection: "row",
-  marginLeft: 9,
-  marginTop: 87
+    height: 59,
+    flexDirection: "row",
+    marginLeft: 9,
+    marginTop: 87
   },
   textInput: {
-  fontFamily: "roboto-regular",
-  color: "#121212",
-  height: 50,
-  width: 200,
-  backgroundColor: "#C7E8CA",
-  borderWidth: 1,
-  borderColor: "#C7E8CA",
-  marginTop:-130
+    fontFamily: "roboto-regular",
+    color: "#121212",
+    height: 50,
+    width: 200,
+    backgroundColor: "#C7E8CA",
+    borderWidth: 1,
+    borderColor: "#C7E8CA",
+    marginTop: -130
   },
   urlRowFiller: {
-  flex: 1,
-  flexDirection: "row",
-  justifyContent: "center"
-  },   
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center"
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalView: {
-    backgroundColor: '#DDF7E3',
-    borderRadius: 5,
-    padding: 20,
-    margin: 5,
-    alignItems: 'center',
-  },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: '#a0aec0',
-    borderRadius: 5,
-    height: 100,
-    padding: 10,
-    textAlignVertical: 'top',
+  metaDataItem: {
     marginBottom: 10,
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-
-  },
-  modalButton: {
-    backgroundColor: '#C7E8CA',
-    padding: 10,
+    borderWidth: 1,
+    borderColor: '#DDD',
     borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  modalButtonText: {
-    color: 'green',
+    padding: 10,
+    },
+    metaDataTopic: {
+    fontSize: 16,
     fontWeight: 'bold',
-  },
+    marginBottom: 5,
+    },
+    metaDataTime: {
+    fontSize: 14,
+    },
+  saveButton: {
+    backgroundColor: '#5D9C59',
+    padding: 10,
+    width:'30%',
+    left:240,
+    borderRadius: 5,
+    alignItems: 'center',
+    },
+    saveButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    },
 });
-
-export default UploadVideo;

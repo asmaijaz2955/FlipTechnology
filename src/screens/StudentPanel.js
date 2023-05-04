@@ -42,28 +42,28 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       borderWidth: 1,
-      backgroundColor: "#DDF7E3"
+      backgroundColor: "white"
       // borderColor: "#000000"
    },
    columnWrapper: {
-      justifyContent: 'space-between', // Set the alignment between each row
-      paddingHorizontal: 10, // Set the horizontal padding between each item
-      paddingVertical: 10, // Set the vertical padding between each item
+      // justifyContent: 'space-between', // Set the alignment between each row
+
+      // paddingHorizontal: 10, // Set the horizontal padding between each item
+      // paddingVertical: 10, // Set the vertical padding between each item
    },
    weekContainer: {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: 54,
-      left: 5,
-      top: 15,
-      width: '145%', // Set the width of each item
-      height: 150, // Set the height of each item
-      backgroundColor: '#C7E8CA',
+      top: 10,
+      width: '50%', // Set the width of each item
+      height: 130, // Set the height of each item
+      backgroundColor: '#C1D5A4',
       marginTop: 20,
-      marginLeft: 9,
       borderRadius: 10,
-      padding: 9
+      marginLeft:10,
+      marginRight: 30
    },
    image: {
       width: 50,
