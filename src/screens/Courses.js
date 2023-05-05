@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       borderWidth: 1,
-      backgroundColor: "#DDF7E3"
+      backgroundColor: "white"
       // borderColor: "#000000"
    },
    columnWrapper: {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
       top: 15,
       width: '145%', // Set the width of each item
       height: 150, // Set the height of each item
-      backgroundColor: '#C7E8CA',
+      backgroundColor: '#C1D5A4',
       marginTop: 20,
       marginLeft: 9,
       borderRadius: 10,

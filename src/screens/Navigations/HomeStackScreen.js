@@ -6,14 +6,14 @@ import TeacherPanel from "../TeacherPanel";
 import MobileApplicationDevelopment from "../MobileApplicationDevelopment";
 import StudentPanel from "../StudentPanel";
 import SubjectWeeks from "../SubjectWeeks";
-import ListofTopics from "../ListofTopics";
 import Videos from "../Videos";
 import Searching from "../Searching";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import UploadVideo from "../UploadVideo";
-import Presentation from "../Presentation";
+import Quiz from "../Quiz";
 import Courses from "../Courses";
-import StudentPresenation from "../Student Presentation";
+import StudentPresentation from "../Student Presentation";
+import Presentation from "../Presentation";
 const HomeStack = createNativeStackNavigator();
 const HomeStackScreen = ({navigation}) => {
     return (
@@ -35,13 +35,13 @@ const HomeStackScreen = ({navigation}) => {
           <HomeStack.Screen name="MobileApplicationDevelopment" component={MobileApplicationDevelopment} />
           <HomeStack.Screen name="StudentPanel" component={StudentPanel} />
           <HomeStack.Screen name="SubjectWeeks" component={SubjectWeeks} />
-          <HomeStack.Screen name="ListofTopics" component={ListofTopics} />
           <HomeStack.Screen name="Videos" component={Videos} />
           <HomeStack.Screen name="UploadVideo" component={UploadVideo} />
           <HomeStack.Screen name="Searching" component={Searching} />
           <HomeStack.Screen name="Courses" component={Courses} />
+          <HomeStack.Screen name="Quiz" component={Quiz} />
+          <HomeStack.Screen name="StudentPresentation" component={StudentPresentation} />
           <HomeStack.Screen name="Presentation" component={Presentation} />
-          <HomeStack.Screen name="StudentPresenation" component={StudentPresenation} />
         </HomeStack.Navigator>
       );
 }

@@ -15,11 +15,11 @@ const [Tasbih, setTasbih] = useState('اللهأكبر');
  const [Type, setType] = useState('Weekly');
 return (
  <View style={styles.container}>
-    <View style={{flexDirection:'row',backgroundColor:'#C7E8CA', alignItems:'center', padding:5, margin:15}}>
+    <View style={{flexDirection:'row',backgroundColor: 'white',borderWidth:1,borderColor: '#224B0C', alignItems:'center', padding:5, margin:15}}>
     <TextInput style={{flex:1, marginLeft:40, height:40}}
    ></TextInput>
    <TouchableOpacity style={{padding:5,right:285}}>
-   <FontAwesomeIcon style={{fontSize: 25}} name="search"
+   <FontAwesomeIcon style={{fontSize: 25,color:'#224B0C'}} name="search"
             />
    </TouchableOpacity ></View>
 <Picker
@@ -39,9 +39,9 @@ onValueChange={currentType => setType(currentType)}  style={styles.picker1}>
 <Picker
 selectedValue={Type}
 onValueChange={currentType => setType(currentType)}  style={styles.picker2}>
- <Picker.Item label="12" value="12"/>
-<Picker.Item label="123" value="123" />
-<Picker.Item label="1234" value="1234" />
+ <Picker.Item label="1" value="1"/>
+<Picker.Item label="2" value="2" />
+<Picker.Item label="3" value="3" />
 </Picker>
 <TouchableOpacity style={styles.button2}>
 <Text style={styles.login}>Search</Text>
@@ -53,14 +53,13 @@ onValueChange={currentType => setType(currentType)}  style={styles.picker2}>
 const styles = StyleSheet.create({
  container: {
  flex: 1,
- backgroundColor: "#DDF7E3"
+ backgroundColor: "white"
  },
  button2: {
  width: 144,
 height: 65,
- backgroundColor: "#C7E8CA",
+ backgroundColor: '#224B0C',
  borderRadius: 21,
- borderColor:'#5D9C59',
  top: 165,
  marginLeft: 110
  },
@@ -68,7 +67,7 @@ height: 65,
     fontSize: 22,
     alignItems: 'center',
     fontWeight: "bold",
-    color: "#5D9C59",
+    color: "white",
     marginTop: 13,
     marginLeft: 30
   },
@@ -78,21 +77,21 @@ height: 65,
     width: '90%',
     alignSelf:'center',
     borderColor:'#5D9C59',
-    backgroundColor: `#C7E8CA`
+    backgroundColor: '#C1D5A4',
  },
  picker1: {
     top: 75,
     bottom: 5,
     width: '90%',
     alignSelf:'center',
-    backgroundColor: `#C7E8CA`
+    backgroundColor: '#C1D5A4'
  },
  picker2: {
     top: 115,
     bottom: 5,
     width: '90%',
     alignSelf:'center',
-    backgroundColor: `#C7E8CA`
+    backgroundColor: '#C1D5A4'
  }
 });
 

@@ -132,7 +132,7 @@ const Videos = ({ route }) => {
               <TextInput
                 style={styles.modalInput}
                 placeholder="Add a note"
-                placeholderTextColor="#a0aec0"
+                placeholderTextColor='#224B0C'
                 value={note}
                 onChangeText={(text) => setNote(text)}
                 multiline={true}
@@ -172,7 +172,7 @@ const Videos = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DDF7E3'
+    backgroundColor: 'white'
 
   },
   header: {
@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
     bottom: 15,
     borderRadius: 5,
     paddingHorizontal: 55,
-    marginLeft: 250
+    marginLeft: 250,
+    color:'#224B0C'
   },
   noteInputContainer: {
     paddingHorizontal: 20,
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#a0aec0',
-    backgroundColor: '#DDF7E3'
+    backgroundColor: 'white'
   },
   noteButton: {
     padding: 10,
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
   noteButtonText: {
     borderRadius: 15,
     color: '#4a5568',
-    backgroundColor: `#C7E8CA`
+    backgroundColor: `white`
   },
   noteInput: {
     flex: 1,
@@ -251,9 +252,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color:'#224B0C'
   },
   noteContainer: {
-    backgroundColor: '#C7E8CA',
+    backgroundColor: '#C1D5A4',
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -287,12 +289,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     marginRight: 5,
-    color: '#000'
-  },
-  image: {
-    width: 31,
-    height: 27,
-    marginLeft: 292
+    color: '#224B0C'
   },
   eyeIconText: {
     fontSize: 12
@@ -312,7 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
-    backgroundColor: '#DDF7E3',
+    backgroundColor: 'white',
     borderRadius: 5,
     padding: 20,
     margin: 5,
@@ -333,13 +330,13 @@ const styles = StyleSheet.create({
 
   },
   modalButton: {
-    backgroundColor: '#C7E8CA',
+    backgroundColor: '#224B0C',
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5,
   },
   modalButtonText: {
-    color: 'green',
+    color: 'white',
     fontWeight: 'bold',
   },
 });

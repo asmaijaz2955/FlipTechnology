@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import CheckBox from 'react-native-check-box';
 import { Text, Image, View, StyleSheet, TextInput, TouchableOpacity  } from 'react-native';
-const Presentation=( { navigation })=>{
+const Evaluation=( { navigation })=>{
     // const [isSelected, setSelection] = useState();
     const [agree,  setAgree] = useState(false);
 
@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
             alignSelf: 'center',
           },
         });
-export default Presentation;
+export default Evaluation;

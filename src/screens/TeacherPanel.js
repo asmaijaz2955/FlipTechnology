@@ -69,9 +69,9 @@ const TeacherPanel = ({ navigation }) => {
                renderItem={({ item }) => (
              <View style={styles.weekContainer} >
             <Text style={styles.weekText}>{item.topic_name}</Text>
-           <TouchableOpacity style={{backgroundColor: `#C7E8CA`,height: '150%',fontWeight: "bold",color: "#5D9C59",}}
+           <TouchableOpacity style={{backgroundColor: '#C1D5A4',height: '150%',fontWeight: "bold",color: "#5D9C59",}}
            onPress={() => setModalVisible(true)}>
-           <Text style={{color:'green'}}> Add Quiz</Text>
+           <Text style={{color:'#224B0C'}}> Add Quiz</Text>
           </TouchableOpacity>
           <Modal
           animationType="slide"
@@ -82,16 +82,16 @@ const TeacherPanel = ({ navigation }) => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <Text style={{color: "#5D9C59",fontSize: 20}}>Quiz Title</Text>      
+               <Text style={{color: '#224B0C',fontSize: 20}}>Quiz Title</Text>      
         <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA"}} value={newItem}
+         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C'}} value={newItem}
           onChangeText={text => setNewItem(text)}/>
-           <Text style={{color: "#5D9C59",fontSize: 20}}>Total Marks</Text>      
+           <Text style={{color: '#224B0C',fontSize: 20}}>Total Marks</Text>      
         <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-         backgroundColor: "#C7E8CA",borderWidth: 1,borderColor: "#C7E8CA", marginTop:-0}} value={newItem}
+         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C', marginTop:-0}} value={newItem}
           onChangeText={text => setNewItem(text)}/>
               <View style={styles.modalButtonContainer}>
-                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Presentation")}>
+                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz")}>
                   <Text style={styles.modalButtonText}>Save</Text>
                 </Pressable>
               </View>
@@ -102,13 +102,13 @@ const TeacherPanel = ({ navigation }) => {
                )}
             />
             <View style={{ flexDirection: 'row',  alignItems: 'center', padding: 5, margin: 15 }}>
-               <TouchableOpacity style={{ padding: 5,left:280,   backgroundColor: `#C7E8CA` }} onPress={navigateToUploadVideo} >
-                  <FontAwesomeIcon style={{ fontSize: 25}} name="plus"
+               <TouchableOpacity style={{ padding: 5,left:280,   backgroundColor: 'white' }} onPress={navigateToUploadVideo} >
+                  <FontAwesomeIcon style={{ fontSize: 25,color: '#224B0C'}} name="plus"
                   />
                </TouchableOpacity>
             </View >
          </View>
-         <TouchableOpacity style={styles.saveButton} onPress={()=>navigation.navigate("StudentPresenation")} >
+         <TouchableOpacity style={styles.saveButton} onPress={()=>navigation.navigate("StudentPresentation")} >
         <Text style={styles.saveButtonText}>Assign Presentation</Text>
       </TouchableOpacity>
       </View>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       borderWidth: 1,
-      backgroundColor: "#DDF7E3"
+      backgroundColor: "white"
       // borderColor: "#000000"
    },
    weekContainer: {
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       marginVertical: 11,
+      borderColor: '#224B0C'
    },
    image: {
       width: 31,
@@ -146,14 +147,16 @@ const styles = StyleSheet.create({
       fontSize: 16,
       height: '150%',
       width: '70%',
-      backgroundColor: `#C7E8CA`
+      backgroundColor: '#C1D5A4',
+      borderColor: '#224B0C'
    },
    picker: {
       top: 25,
       bottom: 5,
       width: '90%',
       alignSelf: 'center',
-      backgroundColor: `#C7E8CA`
+      backgroundColor: '#C1D5A4',
+      borderColor: '#224B0C',
    },
    centeredView: {
       flex: 1,
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalView: {
-      backgroundColor: '#DDF7E3',
+      backgroundColor: 'white',
       borderRadius: 5,
       padding: 20,
       margin: 5,
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     },
     modalInput: {
       borderWidth: 1,
-      borderColor: '#a0aec0',
+      borderColor: '#224B0C',
       borderRadius: 5,
       height: 100,
       padding: 10,
@@ -183,18 +186,18 @@ const styles = StyleSheet.create({
   
     },
     modalButton: {
-      backgroundColor: '#C7E8CA',
+      backgroundColor: '#224B0C',
       padding: 10,
       borderRadius: 5,
       marginHorizontal: 5,
       bottom:-10
     },
     modalButtonText: {
-      color: 'green',
+      color: 'white',
       fontWeight: 'bold',
     },
     saveButton: {
-      backgroundColor: '#5D9C59',
+      backgroundColor: '#224B0C',
       padding: 10,
       width:'45%',
       left:170,

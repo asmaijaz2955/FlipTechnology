@@ -57,12 +57,13 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       fontSize: 54,
       top: 10,
-      width: '50%', // Set the width of each item
+      width: '100%', // Set the width of each item
       height: 130, // Set the height of each item
       backgroundColor: '#C1D5A4',
       marginTop: 20,
       borderRadius: 10,
-      marginLeft:10,
+      marginLeft:25,
+      margin:20,
       marginRight: 30
    },
    image: {

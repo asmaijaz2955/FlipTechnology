@@ -25,16 +25,16 @@ const Weeks = ({ navigation, route }) => {
       <View style={styles.container}>
 
 
-         <View style={{ flexDirection: 'row', backgroundColor: '#C7E8CA', alignItems: 'center', padding: 5, margin: 15 }}>
+         <View style={{ flexDirection: 'row', backgroundColor: 'white',borderWidth:1,borderColor: '#224B0C', padding: 5, margin: 15 }}>
             <TextInput
                style={{ flex: 1, marginLeft: 40, height: 40 }}
             ></TextInput>
             <TouchableOpacity style={{ padding: 5 }}>
-               <FontAwesomeIcon style={{ fontSize: 25 }} name="search"
+               <FontAwesomeIcon style={{ fontSize: 25,color:'#224B0C' }} name="search"
                />
             </TouchableOpacity >
             <TouchableOpacity style={{ padding: 5 }} onPress={() => navigation.navigate("Searching")} >
-               <FontAwesomeIcon style={{ fontSize: 25 }} name="filter"
+               <FontAwesomeIcon style={{ fontSize: 25,color:'#224B0C' }} name="filter"
                />
             </TouchableOpacity>
          </View >
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       borderWidth: 1,
-      backgroundColor: "#DDF7E3"
+      backgroundColor: "white"
       // borderColor: "#000000"
    },
    weekContainer: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
       height: '6%',
       width: '70%',
       paddingHorizontal: 115,
-      backgroundColor: `#C7E8CA`
+      backgroundColor: '#C1D5A4'
    },
    icon3: {
       // alignSelf:"center",
@@ -131,13 +131,13 @@ const styles = StyleSheet.create({
       fontSize: 16,
       height: '150%',
       width: '90%',
-      backgroundColor: `#C7E8CA`
+      backgroundColor: '#C1D5A4'
    },
    picker: {
       top: 25,
       bottom: 5,
       width: '90%',
       alignSelf: 'center',
-      backgroundColor: `#C7E8CA`
+      backgroundColor: '#C1D5A4'
    }
 });
