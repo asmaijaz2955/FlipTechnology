@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
       // borderColor: "#000000"
    },
    columnWrapper: {
-      // justifyContent: 'space-between', // Set the alignment between each row
-
+      justifyContent: 'space-between', // Set the alignment between each row
+      margin:40,
       // paddingHorizontal: 10, // Set the horizontal padding between each item
       // paddingVertical: 10, // Set the vertical padding between each item
    },
@@ -56,15 +56,11 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: 54,
-      top: 10,
-      width: '100%', // Set the width of each item
+      width: '170%', // Set the width of each item
       height: 130, // Set the height of each item
       backgroundColor: '#C1D5A4',
       marginTop: 20,
       borderRadius: 10,
-      marginLeft:25,
-      margin:20,
-      marginRight: 30
    },
    image: {
       width: 50,

@@ -16,7 +16,30 @@ const Weeks = ({ navigation, route }) => {
       console.log('Selected Item', selectedItem)
       console.log('CourseId', courseId)
       // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
-      const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
+      let week = [selectedItem]
+      if (selectedItem == 'All') {
+         week = ["1", "2", "3"]
+      }
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+         "CourseId":courseId,
+         "week": week
+      });
+
+      var requestOptions = {
+         method: 'POST',
+         headers: myHeaders,
+         body: raw,
+         redirect: 'follow'
+      };
+
+      const response = await fetch(`${global.apiURL}student/getTopics`, requestOptions)
+
+      // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
+      // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
@@ -25,16 +48,16 @@ const Weeks = ({ navigation, route }) => {
       <View style={styles.container}>
 
 
-         <View style={{ flexDirection: 'row', backgroundColor: 'white',borderWidth:1,borderColor: '#224B0C', padding: 5, margin: 15 }}>
+         <View style={{ flexDirection: 'row', backgroundColor: 'white', borderWidth: 1, borderColor: '#224B0C', padding: 5, margin: 15 }}>
             <TextInput
                style={{ flex: 1, marginLeft: 40, height: 40 }}
             ></TextInput>
             <TouchableOpacity style={{ padding: 5 }}>
-               <FontAwesomeIcon style={{ fontSize: 25,color:'#224B0C' }} name="search"
+               <FontAwesomeIcon style={{ fontSize: 25, color: '#224B0C' }} name="search"
                />
             </TouchableOpacity >
             <TouchableOpacity style={{ padding: 5 }} onPress={() => navigation.navigate("Searching")} >
-               <FontAwesomeIcon style={{ fontSize: 25,color:'#224B0C' }} name="filter"
+               <FontAwesomeIcon style={{ fontSize: 25, color: '#224B0C' }} name="filter"
                />
             </TouchableOpacity>
          </View >
@@ -46,6 +69,7 @@ const Weeks = ({ navigation, route }) => {
                style={styles.picker}
             >
                {/* <ScrollView style={{flex: 1, height: '100%', width: "100%"}}> */}
+               <Picker.Item label="All" value="All" />
                <Picker.Item label="Week 1" value="1" />
                <Picker.Item label="Week 2" value="2" />
                <Picker.Item label="Week 3" value="3" />
@@ -72,12 +96,13 @@ const Weeks = ({ navigation, route }) => {
                renderItem={({ item }) => {
                   console.log('item', item)
                   return (
-                  <Pressable onPress={() => navigation.navigate("Videos", { lessonId: item.ls_id, user: user })}>
-                     <View style={styles.weekContainer} >
-                        <Text style={styles.weekText}>{item.topic_name}</Text>
-                     </View>
-                  </Pressable>
-               )}}
+                     <Pressable onPress={() => navigation.navigate("Videos", { lessonId: item.LessonId, user: user })}>
+                        <View style={styles.weekContainer} >
+                           <Text style={styles.weekText}>{item.TopicName}</Text>
+                        </View>
+                     </Pressable>
+                  )
+               }}
             />
 
          </View>

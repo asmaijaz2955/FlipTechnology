@@ -72,8 +72,8 @@ const UploadVideo = ({ route }) => {
         />
       </View>
       <View style={styles.noteInputContainer}>
-        <View>
-          <Text style={{marginTop:25,color:'#224B0C'}} >Start Time:{startTime}</Text>
+        <View style={{marginBottom:25}}>
+          <Text style={{marginTop:130,color:'#224B0C'}} >Start Time:{startTime}</Text>
           <Slider style={styles.slider}
             value={startTime}
             onValueChange={value => setStartTime(value)}
@@ -83,7 +83,7 @@ const UploadVideo = ({ route }) => {
             minimumTrackTintColor={styles.primary}
             maximumTrackTintColor={styles.secondary}
           />
-          <Text style={{marginTop:15,color:'#224B0C'}} >End Time:{endTime}</Text>
+          <Text style={{marginTop:10,color:'#224B0C'}} >End Time:{endTime}</Text>
           <Slider style={styles.slider1}
             value={endTime}
             onValueChange={value => setEndTime(value)}
@@ -114,7 +114,10 @@ const UploadVideo = ({ route }) => {
           <View style={styles.metaDataItem}>
             <Text style={styles.metaDataTopic}>{item.TopicName}</Text>
             <Text style={styles.metaDataTime}>
-              Start Time: {item.StartTime} - End Time: {item.EndTime}
+              Start Time: {item.StartTime}
+            </Text>
+            <Text style={styles.metaDataTime}>
+                End Time: {item.EndTime}
             </Text>
           </View>
         )}
@@ -161,9 +164,8 @@ const styles = StyleSheet.create({
     width: '100%', // take full width of the container
     marginTop: -325,
     borderColor: '#224B0C',
-    backgroundColor:'#224B0C',
     borderWidth:10,
-    top: 25
+    top: 130
   },
   video: {
     position: 'absolute',
@@ -173,17 +175,15 @@ const styles = StyleSheet.create({
     right: 0
   },
   noteInputContainer: {
-    marginBottom: -8,
+    marginBottom: 0,
     },
   slider: {
     flexDirection: 'row',
     width: 350,
-    bottom:-10
   },
   slider1: {
     flexDirection: 'column',
     width: 360,
-    bottom:-10
   },
   primary: {
     backgroundColor: '#224B0C',
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
     color:'#224B0C',
     fontWeight: 'bold',
     marginRight: 10,
-    marginTop:30
     },
     topicInput: {
     flex: 1,
@@ -211,13 +210,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 10,
     marginRight: 10,
-    marginTop:30
     },
     addButton: {
     backgroundColor: '#224B0C',
     padding: 10,
     borderRadius: 15,
-    marginTop:30
     },
     addIcon: {
     color: 'white',
@@ -226,22 +223,22 @@ const styles = StyleSheet.create({
   url: {
     color: '#224B0C',
     marginTop: -75,
-    fontSize: 35
+    fontSize: 25
   },
   button: {
     width: 64,
     height: 59,
-    marginTop: -75,
+    marginTop: -80,
     backgroundColor: '#224B0C',
     borderColor: "#C7E8CA",
     borderRadius: 26,
-    marginLeft: 218
+    marginLeft: 230
   },
   play: {
     fontFamily: "roboto-700",
     color: "white",
-    fontSize: 20,
-    marginTop: 12,
+    fontSize: 15,
+    marginTop: 14,
     marginLeft: 13
   },
   urlRow: {
@@ -258,7 +255,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: '#224B0C',
-    marginTop: -130
+    marginTop: -135
   },
   urlRowFiller: {
     flex: 1,

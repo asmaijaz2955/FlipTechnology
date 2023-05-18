@@ -9,7 +9,7 @@ import HomeStackScreen from './src/screens/Navigations/HomeStackScreen';
 // const Tab = createBottomTabNavigator();
 // const Drawer = createDrawerNavigator();
 const HomeStack = createNativeStackNavigator();
-global.apiURL='http://172.20.10.3/FlipTech_Fyp/api/'
+global.apiURL='http://192.168.0.9/FlipTech_Fyp/api/'
 const Stack = createNativeStackNavigator();
 const App = ( {navigation}) => { 
   return (
