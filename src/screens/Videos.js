@@ -9,6 +9,7 @@ const Videos = ({ route }) => {
   // console.log('params', lessonId)
   let user = route.params.user
   // console.log('user')
+  const [showQuizModal, setShowQuizModal] = useState(false)
   const [selectedRating, setSelectedRating] = useState(0);
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState([]);
@@ -22,20 +23,33 @@ const Videos = ({ route }) => {
   const getVideos = async () => {
     // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
-    response.json().then(async data =>{
+    response.json().then(async data => {
       console.log('DATA Video', data[0])
       setvideoDataId(data[0].v_data_id)
       setStudentId()
-    setVideo(data[0])
-    setStart(data[0].start_time.split(':').reduce((acc, time) => (60 * acc) + +time));
-    setEnd(data[0].end_time.split(':').reduce((acc, time) => (60 * acc) + +time));
-    console.log("magic")
-    const response1= await fetch(`${global.apiURL}student/getNotes?studentId=${user.userId}&videoDataId=${data[0].v_data_id}`);
-    const data1 = await response1.json();
-    setNotes(data1)
-    console.log("test Data",data1)
+      setVideo(data[0])
+      const startt = data[0].start_time.split(':').reduce((acc, time) => (60 * acc) + +time)
+      const enddd = data[0].end_time.split(':').reduce((acc, time) => (60 * acc) + +time)
+      // console.log('start seconds', startt)
+      // console.log('end seconds', enddd)
+      setStart(startt);
+      setEnd(enddd);
+      console.log("magic")
+      const response1 = await fetch(`${global.apiURL}student/getNotes?studentId=${user.userId}&videoDataId=${data[0].v_data_id}`);
+      const data1 = await response1.json();
+      setNotes(data1)
+      console.log("test Data", data1)
     });
   }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Call your function here
+      setShowQuizModal(true);
+      console.log('ran')
+    }, 5000); // 20 seconds in milliseconds
+    // Clean up the timer when the component unmounts
+    return () => clearTimeout(timer);
+  }, []);
   // useEffect(() => {
   //   // AsyncStorage.setItem('note', note);
   // }, [note]);
@@ -55,7 +69,7 @@ const Videos = ({ route }) => {
       method: 'POST',
       redirect: 'follow'
     };
-    
+
     fetch(`${global.apiURL}student/rate_video?videoId=${video.v_id}&videoDataId=${videoDataId}&rate=${rating}&studentId=${user.userId}`, requestOptions)
       .then(response => response.text())
       .then(result => console.log("response", result))
@@ -63,11 +77,10 @@ const Videos = ({ route }) => {
     setSelectedRating(rating);
   };
 
-
   const handleNoteSave = async () => {
     console.log(note, video.v_data_id, video.v_id)
     if (note) {
-      const response = await fetch(`${global.apiURL}student/saveNotes?studentId=${user.userId}&notes=${note}&videoId=${video.v_id}&videoDataId=${video.v_data_id}`, {method: "POST"});
+      const response = await fetch(`${global.apiURL}student/saveNotes?studentId=${user.userId}&notes=${note}&videoId=${video.v_id}&videoDataId=${video.v_data_id}`, { method: "POST" });
       const data = await response.json();
       console.log("DATA", data)
       setNote('');
@@ -95,21 +108,21 @@ const Videos = ({ route }) => {
       </View>
 
       <View style={styles.ratingContainer}>
-      {[1, 2, 3, 4, 5].map((rating) => (
-        <TouchableOpacity
-          key={rating}
-          style={[
-            styles.ratingStar,
-            {
-              color: rating <= selectedRating ? '#ffc107' : '#ccc'
-            }
-          ]}
-          onPress={() => handleStarClick(rating)}
-        >
-          <Text>&#9733;</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+        {[1, 2, 3, 4, 5].map((rating) => (
+          <TouchableOpacity
+            key={rating}
+            style={[
+              styles.ratingStar,
+              {
+                color: rating <= selectedRating ? '#ffc107' : '#ccc'
+              }
+            ]}
+            onPress={() => handleStarClick(rating)}
+          >
+            <Text>&#9733;</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       <View style={styles.viewCount}>
         <View style={styles.eyeIcon}>
@@ -120,6 +133,21 @@ const Videos = ({ route }) => {
         </View>
       </View>
       <View>
+        {/* Quiz Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showQuizModal}
+          onRequestClose={() => {
+            setShowQuizModal(!showQuizModal)
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text>Attempt Quiz</Text>
+            </View>
+          </View>
+        </Modal>
+        {/* Quiz Modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -216,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 55,
     marginLeft: 250,
-    color:'#224B0C'
+    color: '#224B0C'
   },
   noteInputContainer: {
     paddingHorizontal: 20,
@@ -252,7 +280,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color:'#224B0C'
+    color: '#224B0C'
   },
   noteContainer: {
     backgroundColor: '#C1D5A4',

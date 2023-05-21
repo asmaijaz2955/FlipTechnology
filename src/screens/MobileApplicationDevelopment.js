@@ -3,7 +3,6 @@ import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressa
 import { Picker } from '@react-native-picker/picker';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Weeks = ({ navigation, route }) => {
-   const [currency, setCurrency] = useState('US Dollar');
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
    let courseId = route.params.courseId

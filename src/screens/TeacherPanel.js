@@ -9,6 +9,7 @@ const TeacherPanel = ({ navigation }) => {
    const [topic, settopic] = useState([]);
    const [modalVisible, setModalVisible] = useState(false);
    const [newItem, setNewItem] = useState('');
+   const [session,setSession] = useState('');
    const route = useRoute();
    let courseId = route.params.courseId
    console.log("courseId", courseId)
@@ -16,6 +17,7 @@ const TeacherPanel = ({ navigation }) => {
    console.log('user', user)
    useEffect(() => {
       getTopics();
+      getSession();
    }, [selectedItem])
    const getTopics = async () => {
       console.log('Selected Item', selectedItem)
@@ -25,6 +27,17 @@ const TeacherPanel = ({ navigation }) => {
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
+   }
+   const getSession = async () => {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const day = String(currentDate.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      const response = await fetch(`${global.apiURL}teacher/getCurrentSession?currentDate=${formattedDate}`)
+      const data = await response.json()
+      console.log("JSON DATA", data)
+      setSession(data)
    }
    const navigateToUploadVideo = () =>{
       const teacherId = user.userId
@@ -91,7 +104,7 @@ const TeacherPanel = ({ navigation }) => {
          backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C', marginTop:-0}} value={newItem}
           onChangeText={text => setNewItem(text)}/>
               <View style={styles.modalButtonContainer}>
-                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz")}>
+                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz", { session: session })}>
                   <Text style={styles.modalButtonText}>Save</Text>
                 </Pressable>
               </View>
