@@ -554,12 +554,15 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+    backgroundColor: '#224B0C',
+    color:'white'
   },
   fabSave: {
     position: 'absolute',
     margin: 16,
     left: 0,
     bottom: 0,
+    backgroundColor: '#224B0C',
   },
   weekContainer: {
     flexDirection: 'row',

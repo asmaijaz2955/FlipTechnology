@@ -1,22 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image,Modal } from 'react-native';
-const Presentation=({navigation})=>{
+import { Picker } from '@react-native-picker/picker';
+const Presentation=({navigation,route})=>{
     const [newItem, setNewItem] = useState('');
+    let selectedItems = route.params.selectedItems;
+    let courseId = route.params.courseId;
+    const [selectedItem, setselectedItem] = useState('1');
+    const [topic, setTopic] = useState([]);
+    useEffect(() => {
+      getTopics();
+   }, [selectedItem])
+   const [selectedValue, setSelectedValue] = useState('');
+    const handleValueChange = (itemValue) => {
+        setSelectedValue(itemValue);
+    };
+   const getTopics = async () => {
+      console.log('Selected Item', selectedItem)
+      console.log('CourseId', courseId)
+      // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
+      const response = await fetch(`${global.apiURL}teacher/getAllTopics?courseId=${courseId}&week=${selectedItem}`)
+      const data = await response.json()
+      console.log("JSON DATA", data)
+      setTopic(data)
+   }
 return(
     <View style={styles.container}>
-    <View style={styles.modalView}>
-    <Text style={{color: '#224B0C',fontSize: 20,right:20}}>Topic</Text>      
-<TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C'}} value={newItem}
-onChangeText={text => setNewItem(text)}/>
-<Text style={{color: '#224B0C',fontSize: 20,marginTop:40}}>Date</Text>      
-<TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C', marginTop:0}} value={newItem}
-onChangeText={text => setNewItem(text)}/>
- <Pressable style={styles.modalButton} onPress={() => navigation.navigate("TeacherPanel")}>
-                  <Text style={styles.modalButtonText}>Save</Text>
-                </Pressable>
-</View>
+    <Picker
+                style={styles.inputv}
+                selectedValue={selectedValue}
+                onValueChange={(itemValue) => handleValueChange(itemValue)}>
+                {topic.map((item) => (
+                    <Picker.Item
+                        key={item.topicName}
+                        label={item.topicName}
+                        value={item.topicName}
+                    />
+                ))}
+    </Picker>
+
 </View>
 );
 };
@@ -29,23 +50,20 @@ const styles = StyleSheet.create({
       backgroundColor: "white"
       // borderColor: "#000000"
    },
-   modalView: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 20,
-    margin: 5,
-    alignItems: 'center',
-  },
-  modalButton: {
-    backgroundColor: '#224B0C',
-    padding: 10,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    bottom:-40
-  },
-  modalButtonText: {
-    color: 'white',
+   inputv: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    width: 270,
+    marginTop: 10,
+    height: 50,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    fontSize: 16,
     fontWeight: 'bold',
-  },
+    backgroundColor: "#076F65",
+    borderColor: '#076F65',
+    marginLeft: 7,
+},
 }
 );

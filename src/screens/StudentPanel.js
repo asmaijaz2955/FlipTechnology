@@ -46,8 +46,10 @@ const styles = StyleSheet.create({
       // borderColor: "#000000"
    },
    columnWrapper: {
-      justifyContent: 'space-between', // Set the alignment between each row
-      margin:40,
+      justifyContent: 'flex-start', // Set the alignment between each row
+      marginVertical:20,
+      // alignItems: 'center'
+      // marginHorizontal: 10, 
       // paddingHorizontal: 10, // Set the horizontal padding between each item
       // paddingVertical: 10, // Set the vertical padding between each item
    },
@@ -55,11 +57,11 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: 54,
-      width: '170%', // Set the width of each item
-      height: 130, // Set the height of each item
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      gap:10,
       backgroundColor: '#C1D5A4',
-      marginTop: 20,
+      marginHorizontal: 40,
       borderRadius: 10,
    },
    image: {
@@ -68,7 +70,8 @@ const styles = StyleSheet.create({
       borderRadius: 25,
    },
    weekText: {
-      paddingTop: 15,
+      // paddingTop: 15,
+      fontSize: 20,
       fontWeight: "bold",
       // width: 350,
       // height: 62,

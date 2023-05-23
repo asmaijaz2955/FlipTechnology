@@ -1,30 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+// import { Picker } from '@react-native-picker/picker';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import SelectBox from 'react-native-multi-selectbox';
+import { xorBy } from 'lodash';
+// import { Button } from 'react-native-elements'
+const K_OPTIONS = [
+   {
+      item: 'All',
+      id: 'All',
+   },
+   {
+      item: 'Week 1',
+      id: '1',
+   },
+   {
+      item: 'Week 2',
+      id: '2',
+   },
+   {
+      item: 'Week 3',
+      id: '3',
+   },
+   {
+      item: 'Week 4',
+      id: '4',
+   },
+   {
+      item: 'Week 5',
+      id: '5',
+   },
+   {
+      item: 'Week 6',
+      id: '6',
+   },
+   {
+      item: 'Week 7',
+      id: '7',
+   },
+]
 const Weeks = ({ navigation, route }) => {
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
-   let courseId = route.params.courseId
-   console.log("courseId", courseId)
-   let user = route.params.user
+   const [selectedTeams, setSelectedTeams] = useState([]);
+   // let user = route.params.user
+   // let courseId = route.params.courseId
+   const {user, courseId} = route.params
+   console.log("courseId", courseId, "user", user)
+
+   // useEffect(() => {
+   //    getTopics();
+   // }, [selectedItem])
    useEffect(() => {
       getTopics();
-   }, [selectedItem])
+   }, [selectedTeams])
+   
+   function onMultiChange() {
+      return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
+   }
+
+   function onChange() {
+      return (val) => setSelectedTeams(val)
+   }
+
    const getTopics = async () => {
       console.log('Selected Item', selectedItem)
       console.log('CourseId', courseId)
-      // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
-      let week = [selectedItem]
-      if (selectedItem == 'All') {
-         week = ["1", "2", "3"]
+      console.log('selected teams', selectedTeams)
+      let week = []
+      const containsAll = selectedTeams.find(obj => obj.id === "All");
+      if(containsAll){
+         week = ['1', '2', '3','4','5','6','7','8','9','10','11','12','13','14','15','16']
       }
+      else{
+         const weekItems = selectedTeams.map(obj => obj.id);
+         week = weekItems         
+      }
+      console.log('asdas', week)
+
+      // let week = [selectedItem]
+
+      // if (selectedItem == 'All') {
+      //    week = ["1", "2", "3"]
+      // }
 
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
       var raw = JSON.stringify({
-         "CourseId":courseId,
+         "CourseId": courseId,
          "week": week
       });
 
@@ -33,16 +97,49 @@ const Weeks = ({ navigation, route }) => {
          headers: myHeaders,
          body: raw,
          redirect: 'follow'
-      };
-
+      };  
       const response = await fetch(`${global.apiURL}student/getTopics`, requestOptions)
-
-      // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
+      // // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
       // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
    }
+
+   // const getTopics = async () => {
+   //    console.log('Selected Item', selectedItem)
+   //    console.log('CourseId', courseId)
+   //    // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
+   //    let week = [selectedItem]
+
+   //    if (selectedItem == 'All') {
+   //       week = ["1", "2", "3"]
+   //    }
+
+   //    var myHeaders = new Headers();
+   //    myHeaders.append("Content-Type", "application/json");
+
+   //    var raw = JSON.stringify({
+   //       "CourseId": courseId,
+   //       "week": week
+   //    });
+
+   //    var requestOptions = {
+   //       method: 'POST',
+   //       headers: myHeaders,
+   //       body: raw,
+   //       redirect: 'follow'
+   //    };
+
+   //    const response = await fetch(`${global.apiURL}student/getTopics`, requestOptions)
+
+   //    // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
+   //    // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
+   //    const data = await response.json()
+   //    console.log("JSON DATA", data)
+   //    settopic(data)
+   // }
+
    return (
       <View style={styles.container}>
 
@@ -60,14 +157,25 @@ const Weeks = ({ navigation, route }) => {
                />
             </TouchableOpacity>
          </View >
-         <View >
-            <Picker
+         <View style={{ margin: 25,bottom:60 }}>
+            <View style={{ height: 40 }} />
+            <SelectBox
+               label="Select Week"
+               options={K_OPTIONS}
+               selectedValues={selectedTeams}
+               onMultiSelect={onMultiChange()}
+               onTapClose={onMultiChange()}
+               isMulti
+            />
+            <Button style={{color:'#224B0C'}} title='Show' onPress={getTopics} />
+         </View>
+         {/* <View > */}
+         {/* <Picker
                selectedValue={selectedItem}
                onValueChange={(itemValue, itemIndex) =>
                   setselectedItem(itemValue)}
                style={styles.picker}
             >
-               {/* <ScrollView style={{flex: 1, height: '100%', width: "100%"}}> */}
                <Picker.Item label="All" value="All" />
                <Picker.Item label="Week 1" value="1" />
                <Picker.Item label="Week 2" value="2" />
@@ -86,25 +194,24 @@ const Weeks = ({ navigation, route }) => {
                <Picker.Item label="Week 15" value="15" />
                <Picker.Item label="Week 16" value="16" />
 
-               {/* </ScrollView> */}
-            </Picker>
-            <View style={{ marginVertical: 20 }}></View>
-            <FlatList
-               data={topic}
-               keyExtractor={(item, index) => index}
-               renderItem={({ item }) => {
-                  console.log('item', item)
-                  return (
-                     <Pressable onPress={() => navigation.navigate("Videos", { lessonId: item.LessonId, user: user })}>
-                        <View style={styles.weekContainer} >
-                           <Text style={styles.weekText}>{item.TopicName}</Text>
-                        </View>
-                     </Pressable>
-                  )
-               }}
-            />
+               </Picker> */}
+         {/* <View style={{ marginVertical: 20 }}></View> */}
+         <FlatList
+            data={topic}
+            keyExtractor={(item, index) => index}
+            renderItem={({ item }) => {
+               console.log('item', item)
+               return (
+                  <Pressable onPress={() => navigation.navigate("Videos", { lessonId: item.LessonId, user: user, topicId: item.Topic_id })}>
+                     <View style={styles.weekContainer} >
+                        <Text style={styles.weekText}>{item.TopicName}</Text>
+                     </View>
+                  </Pressable>
+               )
+            }}
+         />
 
-         </View>
+         {/* </View> */}
       </View>
    );
 };
@@ -121,7 +228,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 10,
+      marginVertical: 10, 
    },
    image: {
       width: 31,
@@ -155,13 +262,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
       height: '150%',
       width: '90%',
-      backgroundColor: '#C1D5A4'
-   },
-   picker: {
-      top: 25,
-      bottom: 5,
-      width: '90%',
-      alignSelf: 'center',
-      backgroundColor: '#C1D5A4'
+      backgroundColor: '#C1D5A4',
    }
 });

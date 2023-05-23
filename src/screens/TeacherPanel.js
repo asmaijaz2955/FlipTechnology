@@ -72,14 +72,14 @@ const TeacherPanel = ({ navigation }) => {
                <Picker.Item label="Week 14" value="week14" />
                <Picker.Item label="Week 15" value="week15" />
                <Picker.Item label="Week 16" value="week16" />
-
                {/* </ScrollView> */}
             </Picker>
             <View style={{ marginVertical: 20 }}></View>
             <FlatList
                data={topic}
                keyExtractor={(item, index) => index}
-               renderItem={({ item }) => (
+               renderItem={({ item }) => {
+                  return(
              <View style={styles.weekContainer} >
             <Text style={styles.weekText}>{item.topic_name}</Text>
            <TouchableOpacity style={{backgroundColor: '#C1D5A4',height: '150%',fontWeight: "bold",color: "#5D9C59",}}
@@ -112,7 +112,8 @@ const TeacherPanel = ({ navigation }) => {
           </View>
         </Modal>
                      </View>
-               )}
+                     )
+               }}
             />
             <View style={{ flexDirection: 'row',  alignItems: 'center', padding: 5, margin: 15 }}>
                <TouchableOpacity style={{ padding: 5,left:280,   backgroundColor: 'white' }} onPress={navigateToUploadVideo} >
@@ -121,7 +122,7 @@ const TeacherPanel = ({ navigation }) => {
                </TouchableOpacity>
             </View >
          </View>
-         <TouchableOpacity style={styles.saveButton} onPress={()=>navigation.navigate("StudentPresentation")} >
+         <TouchableOpacity style={styles.saveButton} onPress={()=>navigation.navigate("StudentPresentation",{courseId})} >
         <Text style={styles.saveButtonText}>Assign Presentation</Text>
       </TouchableOpacity>
       </View>
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 11,
+      marginVertical: 15,
       borderColor: '#224B0C'
    },
    image: {
@@ -164,9 +165,8 @@ const styles = StyleSheet.create({
       borderColor: '#224B0C'
    },
    picker: {
-      top: 25,
-      bottom: 5,
-      width: '90%',
+      bottom: -5,
+      width: '92%',
       alignSelf: 'center',
       backgroundColor: '#C1D5A4',
       borderColor: '#224B0C',

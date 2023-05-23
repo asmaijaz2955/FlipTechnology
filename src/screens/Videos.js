@@ -4,11 +4,12 @@ import { WebView } from 'react-native-webview';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const Videos = ({ route }) => {
-  let lessonId = route.params.lessonId
+  // let lessonId = route.params.lessonId
   // let lessonId = route.params
   // console.log('params', lessonId)
-  let user = route.params.user
-  // console.log('user')
+  // let user = route.params.user
+  const {lessonId, user, topicId} = route.params;
+  console.log('user', topicId)
   const [showQuizModal, setShowQuizModal] = useState(false)
   const [selectedRating, setSelectedRating] = useState(0);
   const [note, setNote] = useState('');
@@ -24,10 +25,14 @@ const Videos = ({ route }) => {
     // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
     response.json().then(async data => {
-      console.log('DATA Video', data[0])
-      setvideoDataId(data[0].v_data_id)
+      // console.log('DATA Video', data)
+      const topicVideo = data.find(d => d.topic_id === topicId)
+      console.log('asdasdasds', topicVideo)
+      // setvideoDataId(data[0].v_data_id)
+      setvideoDataId(topicVideo.v_data_id)
       setStudentId()
-      setVideo(data[0])
+      // setVideo(data[0])
+      setVideo(topicVideo)
       const startt = data[0].start_time.split(':').reduce((acc, time) => (60 * acc) + +time)
       const enddd = data[0].end_time.split(':').reduce((acc, time) => (60 * acc) + +time)
       // console.log('start seconds', startt)
