@@ -51,7 +51,7 @@ const Videos = ({ route }) => {
       // Call your function here
       setShowQuizModal(true);
       console.log('ran')
-    }, 5000); // 20 seconds in milliseconds
+    }, 10000); // 20 seconds in milliseconds
     // Clean up the timer when the component unmounts
     return () => clearTimeout(timer);
   }, []);
@@ -100,6 +100,11 @@ const Videos = ({ route }) => {
       </View>
     );
   };
+  const handleQuizAttempt = () => {
+    // handle the logic for when the quiz is attempted
+    // navigate to the next screen
+    navigation.navigate('AttemtQuiz');
+  }
   return (
     <View style={styles.container}>
       <View style={styles.videoContainer}>
@@ -148,7 +153,9 @@ const Videos = ({ route }) => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text>Attempt Quiz</Text>
+            <Pressable style={styles.modalButton} onPress={handleQuizAttempt}>
+                  <Text style={styles.modalButtonText}>Attempt Quiz</Text>
+                </Pressable>
             </View>
           </View>
         </Modal>

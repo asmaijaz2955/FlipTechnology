@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image,Modal } from 'react-native';
+import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { useRoute } from '@react-navigation/native';
-const TeacherPanel = ({ navigation }) => {
+import { FAB, Provider } from 'react-native-paper';
+const WeekTopics = ({ navigation }) => {
    const [currency, setCurrency] = useState('US Dollar');
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
    const [modalVisible, setModalVisible] = useState(false);
    const [newItem, setNewItem] = useState('');
-   const [session,setSession] = useState('');
+   const [session, setSession] = useState('');
    const route = useRoute();
    let courseId = route.params.courseId
    console.log("courseId", courseId)
@@ -39,43 +40,79 @@ const TeacherPanel = ({ navigation }) => {
       console.log("JSON DATA", data)
       setSession(data)
    }
-   const navigateToUploadVideo = () =>{
+   const navigateToUploadVideo = () => {
       const teacherId = user.userId
       // const courseId = courseId
       // console.log("Teacher ID/Course ID", teacherId, courseId)
       // const 
-      navigation.navigate("UploadVideo", {teacherId, courseId})
+      navigation.navigate("UploadVideo", { teacherId, courseId })
+   }
+   const renderItem = ({ item, index }) => {
+      return (
+         <View style={styles.weekContainer} key={index}>
+            <Text style={styles.weekText}>{item.topic_name}</Text>
+            <TouchableOpacity style={{ backgroundColor: '#C1D5A4', height: '150%', fontWeight: "bold", color: "#5D9C59", }}
+               onPress={() => setModalVisible(true)}>
+               <Text style={{ color: '#224B0C' }}> Add Quiz</Text>
+            </TouchableOpacity>
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={modalVisible}
+               onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+               }}>
+                  <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+               <Text style={{color: '#224B0C',fontSize: 20}}>Quiz Title</Text>      
+        <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C'}} value={newItem}
+          onChangeText={text => setNewItem(text)}/>
+           <Text style={{color: '#224B0C',fontSize: 20}}>Total Marks</Text>      
+        <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
+         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C', marginTop:-0}} value={newItem}
+          onChangeText={text => setNewItem(text)}/>
+              <View style={styles.modalButtonContainer}>
+                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz", { session: session })}>
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+               {/* Modal content */}
+            </Modal>
+         </View>
+      )
    }
    return (
       <View style={styles.container}>
-         <View >
-            <Picker
-               selectedValue={selectedItem}
-               onValueChange={(itemValue, itemIndex) =>
-                  setselectedItem(itemValue)}
-               style={styles.picker}
-            >
-               {/* <ScrollView style={{flex: 1, height: '100%', width: "100%"}}> */}
-               <Picker.Item label="Week 1" value="week1" />
-               <Picker.Item label="Week 2" value="week2" />
-               <Picker.Item label="Week 3" value="week3" />
-               <Picker.Item label="Week 4" value="week4" />
-               <Picker.Item label="Week 5" value="week5" />
-               <Picker.Item label="Week 6" value="week6" />
-               <Picker.Item label="Week 7" value="week7" />
-               <Picker.Item label="Week 8" value="week8" />
-               <Picker.Item label="Week 9" value="week9" />
-               <Picker.Item label="Week 10" value="week10" />
-               <Picker.Item label="Week 11" value="week11" />
-               <Picker.Item label="Week 12" value="week12" />
-               <Picker.Item label="Week 13" value="week13" />
-               <Picker.Item label="Week 14" value="week14" />
-               <Picker.Item label="Week 15" value="week15" />
-               <Picker.Item label="Week 16" value="week16" />
-               {/* </ScrollView> */}
-            </Picker>
-            <View style={{ marginVertical: 20 }}></View>
-            <FlatList
+         <Picker
+            selectedValue={selectedItem}
+            onValueChange={(itemValue, itemIndex) =>
+               setselectedItem(itemValue)}
+            style={styles.picker}
+         >
+            {/* <ScrollView style={{flex: 1, height: '100%', width: "100%"}}> */}
+            <Picker.Item label="Week 1" value="week1" />
+            <Picker.Item label="Week 2" value="week2" />
+            <Picker.Item label="Week 3" value="week3" />
+            <Picker.Item label="Week 4" value="week4" />
+            <Picker.Item label="Week 5" value="week5" />
+            <Picker.Item label="Week 6" value="week6" />
+            <Picker.Item label="Week 7" value="week7" />
+            <Picker.Item label="Week 8" value="week8" />
+            <Picker.Item label="Week 9" value="week9" />
+            <Picker.Item label="Week 10" value="week10" />
+            <Picker.Item label="Week 11" value="week11" />
+            <Picker.Item label="Week 12" value="week12" />
+            <Picker.Item label="Week 13" value="week13" />
+            <Picker.Item label="Week 14" value="week14" />
+            <Picker.Item label="Week 15" value="week15" />
+            <Picker.Item label="Week 16" value="week16" />
+            {/* </ScrollView> */}
+         </Picker>
+         <View style={{ marginVertical: 10 }}></View>
+         {/* <FlatList
                data={topic}
                keyExtractor={(item, index) => index}
                renderItem={({ item }) => {
@@ -114,21 +151,39 @@ const TeacherPanel = ({ navigation }) => {
                      </View>
                      )
                }}
+            /> */}
+         <FlatList data={topic}
+            keyExtractor={(item, index) => index}
+            renderItem={renderItem}
+         />
+         <View style={{ flexDirection: 'row',  justifyContent: 'space-between', padding: 15 }}>
+            <FAB
+               style={styles.fab}
+               small
+               icon="plus"
+               onPress={navigateToUploadVideo}
+               color='white'
             />
-            <View style={{ flexDirection: 'row',  alignItems: 'center', padding: 5, margin: 15 }}>
-               <TouchableOpacity style={{ padding: 5,left:280,   backgroundColor: 'white' }} onPress={navigateToUploadVideo} >
-                  <FontAwesomeIcon style={{ fontSize: 25,color: '#224B0C'}} name="plus"
-                  />
-               </TouchableOpacity>
-            </View >
+            <FAB
+               style={styles.fab}
+               small
+               label='Assign'
+               onPress={() => navigation.navigate('AssignPresentation', { courseId, user })}
+               color='white'
+            />
+            <FAB
+               style={styles.fab}
+               small
+               label='Evalute'
+               onPress={() => navigation.navigate('Evaluation', {user})}
+               color='white'
+            />
+
          </View>
-         <TouchableOpacity style={styles.saveButton} onPress={()=>navigation.navigate("StudentPresentation",{courseId})} >
-        <Text style={styles.saveButtonText}>Assign Presentation</Text>
-      </TouchableOpacity>
       </View>
    );
 };
-export default TeacherPanel;
+export default WeekTopics;
 const styles = StyleSheet.create({
    //Check project repo for styles
    container: {
@@ -176,15 +231,15 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    modalView: {
+   },
+   modalView: {
       backgroundColor: 'white',
       borderRadius: 5,
       padding: 20,
       margin: 5,
       alignItems: 'center',
-    },
-    modalInput: {
+   },
+   modalInput: {
       borderWidth: 1,
       borderColor: '#224B0C',
       borderRadius: 5,
@@ -192,33 +247,51 @@ const styles = StyleSheet.create({
       padding: 10,
       textAlignVertical: 'top',
       marginBottom: 10,
-    },
-    modalButtonContainer: {
+   },
+   modalButtonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-  
-    },
-    modalButton: {
+
+   },
+   modalButton: {
       backgroundColor: '#224B0C',
       padding: 10,
       borderRadius: 5,
       marginHorizontal: 5,
-      bottom:-10
-    },
-    modalButtonText: {
+      bottom: -10
+   },
+   modalButtonText: {
       color: 'white',
       fontWeight: 'bold',
-    },
-    saveButton: {
+   },
+   fab: {
+      backgroundColor: '#224B0C',
+      color: 'white'
+   },
+   fabSave: {
+      position: 'absolute',
+      margin: 16,
+      left: 15,
+      bottom: 0,
+      backgroundColor: '#224B0C',
+   },
+   fab1: {
+      position: 'absolute',
+      margin: 16,
+      left: 10,
+      bottom: 0,
+      backgroundColor: '#224B0C',
+   },
+   saveButton: {
       backgroundColor: '#224B0C',
       padding: 10,
-      width:'45%',
-      left:170,
+      width: '45%',
+      left: 170,
       borderRadius: 5,
       alignItems: 'center',
-    },
-    saveButtonText: {
+   },
+   saveButtonText: {
       color: '#FFF',
       fontWeight: 'bold',
-    },
+   },
 });

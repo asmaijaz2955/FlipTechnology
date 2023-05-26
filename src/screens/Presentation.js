@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressable, TouchableOpacity, Image,Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { FAB, Provider } from 'react-native-paper';
 const Presentation=({navigation,route})=>{
     const [newItem, setNewItem] = useState('');
     let selectedItems = route.params.selectedItems;
     let courseId = route.params.courseId;
+    let user=route.params.user;
     const [selectedItem, setselectedItem] = useState('1');
     const [topic, setTopic] = useState([]);
+    const [date, setDate] = useState([]);
     useEffect(() => {
       getTopics();
    }, [selectedItem])
@@ -22,6 +25,30 @@ const Presentation=({navigation,route})=>{
       const data = await response.json()
       console.log("JSON DATA", data)
       setTopic(data)
+   };
+const savePresentation = async()=>{
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "studentId": [
+    "2018-ARID-001",
+    "2018-ARID-0345"
+  ],
+  "topicId": 1,
+  "date": "2023-05-21",
+  "t_id": 101,
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+const response = await fetch(`${global.apiURL}teacher/AssignPresentation`, requestOptions)
+    const data = await response.json()
+    console.log('data', data)
    }
 return(
     <View style={styles.container}>
@@ -37,7 +64,17 @@ return(
                     />
                 ))}
     </Picker>
-
+    <TextInput placeholder="Date" style={{
+      fontFamily: "roboto-regular", color: "#121212", height: 50, width: 300,
+      backgroundColor: "white", borderWidth: 1, borderColor: '#224B0C', marginTop: 30,left:40,position:'absolute'
+      }} value={date}
+      onChangeText={text => setDate(text)} />
+      <FAB
+          style={styles.fabSave}
+          small
+          label='Save'
+          onPress={savePresentation}
+        />
 </View>
 );
 };
@@ -65,5 +102,12 @@ const styles = StyleSheet.create({
     borderColor: '#076F65',
     marginLeft: 7,
 },
+fabSave: {
+  position: 'absolute',
+  margin: 16,
+  left: 0,
+  bottom: 0,
+  backgroundColor: '#224B0C',
+}
 }
 );

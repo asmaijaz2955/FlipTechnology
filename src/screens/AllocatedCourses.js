@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, ScrollView, FlatList, Pressable, Image } from "react-native";
-const StudentPanel = ({ navigation, route }) => {
+const AllocatedCourses = ({ navigation, route }) => {
    const [subjects, setsubjects] = useState([]);
    const [images, setimages] = useState([{ src: require('./Assets/Images/sub.png'), key: '1' }]);
    let user = route.params.user;
+   let teacherId = route.params.teacherId
    console.log(user)
    useEffect(() => {
-      getAllSubjects();
+      getTeachingSubjects();
    }, [])
-   const getAllSubjects = async () => {
-      const response = await fetch(`${global.apiURL}student/getEnrollSubjects?userId=${user.Id}`)
+   const getTeachingSubjects = async () => {
+      const response = await fetch(`${global.apiURL}teacher/getTeachingSubjects?teacherId=${user.userId}`)
       const courses = await response.json();
       console.log("course",courses)
       setsubjects(courses)
@@ -24,7 +25,7 @@ const StudentPanel = ({ navigation, route }) => {
             numColumns={2} // Set the number of columns
             columnWrapperStyle={styles.columnWrapper}
             renderItem={({ item }) => (
-               <Pressable onPress={() => navigation.navigate("MobileApplicationDevelopment", { user:user ,courseId: item.c_id })}>
+               <Pressable onPress={() => navigation.navigate("WeekTopics", { user:user ,courseId: item.c_id })}>
                   <View style={styles.weekContainer}>
                      <Image source={images[0].src} style={styles.image} />
                      <Text style={styles.weekText}>{item.name}</Text>
@@ -46,23 +47,24 @@ const styles = StyleSheet.create({
       // borderColor: "#000000"
    },
    columnWrapper: {
-      justifyContent: 'flex-start', // Set the alignment between each row
-      marginVertical:20,
-      // alignItems: 'center'
-      // marginHorizontal: 10, 
-      // paddingHorizontal: 10, // Set the horizontal padding between each item
-      // paddingVertical: 10, // Set the vertical padding between each item
+      justifyContent: 'space-between', // Set the alignment between each row
+      paddingHorizontal: 10, // Set the horizontal padding between each item
+      paddingVertical: 10, // Set the vertical padding between each item
    },
    weekContainer: {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: 20,
-      paddingVertical: 15,
-      gap:10,
+      fontSize: 54,
+      left: 5,
+      top: 15,
+      width: '145%', // Set the width of each item
+      height: 150, // Set the height of each item
       backgroundColor: '#C1D5A4',
-      marginHorizontal: 40,
+      marginTop: 20,
+      marginLeft: 9,
       borderRadius: 10,
+      padding: 9
    },
    image: {
       width: 50,
@@ -70,8 +72,7 @@ const styles = StyleSheet.create({
       borderRadius: 25,
    },
    weekText: {
-      // paddingTop: 15,
-      fontSize: 20,
+      paddingTop: 15,
       fontWeight: "bold",
       // width: 350,
       // height: 62,
@@ -81,4 +82,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default StudentPanel;
+export default AllocatedCourses;

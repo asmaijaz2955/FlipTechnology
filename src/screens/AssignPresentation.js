@@ -21,7 +21,7 @@ import { Picker } from '@react-native-picker/picker';
 import { FAB, Provider } from 'react-native-paper';
 import Presentation from "./Presentation";
 
-const StudentPresenation=({navigation,route})=> {  
+const AssignPresenation=({navigation,route})=> {  
 const [section, setSetion] = useState('');
 const [selectedItems, setSelectedItems] = useState([]);
 const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -99,6 +99,7 @@ selectedValue={section}
           small
           label='Assign'
           onPress={() => navigation.navigate('Presentation',{selectedItems,courseId})}
+          color='white'
         />
  </View>
  );
@@ -161,4 +162,4 @@ height: 60,
   },
 });
 
-export default StudentPresenation;
+export default AssignPresenation;

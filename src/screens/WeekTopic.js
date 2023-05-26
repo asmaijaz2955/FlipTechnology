@@ -4,6 +4,7 @@ import { Text, StyleSheet, View, TextInput, Button, FlatList, ScrollView, Pressa
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
+import { FAB, Provider } from 'react-native-paper';
 // import { Button } from 'react-native-elements'
 const K_OPTIONS = [
    {
@@ -38,8 +39,44 @@ const K_OPTIONS = [
       item: 'Week 7',
       id: '7',
    },
+   {
+      item: 'Week 8',
+      id: '8',
+   },
+   {
+      item: 'Week 9',
+      id: '9',
+   },
+   {
+      item: 'Week 10',
+      id: '10',
+   },
+   {
+      item: 'Week 11',
+      id: '11',
+   },
+   {
+      item: 'Week 12',
+      id: '12',
+   },
+   {
+      item: 'Week 13',
+      id: '13',
+   },
+   {
+      item: 'Week 14',
+      id: '14',
+   },
+   {
+      item: 'Week 15',
+      id: '15',
+   },
+   {
+      item: 'Week 16',
+      id: '16',
+   },
 ]
-const Weeks = ({ navigation, route }) => {
+const WeekTopic = ({ navigation, route }) => {
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
    const [selectedTeams, setSelectedTeams] = useState([]);
@@ -167,7 +204,13 @@ const Weeks = ({ navigation, route }) => {
                onTapClose={onMultiChange()}
                isMulti
             />
-            <Button style={{color:'#224B0C'}} title='Show' onPress={getTopics} />
+            <FAB
+          style={styles.fabSave}
+          small
+          label='Save'
+          onPress={getTopics}
+         color='white'
+        />
          </View>
          {/* <View > */}
          {/* <Picker
@@ -195,7 +238,7 @@ const Weeks = ({ navigation, route }) => {
                <Picker.Item label="Week 16" value="16" />
 
                </Picker> */}
-         {/* <View style={{ marginVertical: 20 }}></View> */}
+         <View style={{ marginVertical: -40 }}></View>
          <FlatList
             data={topic}
             keyExtractor={(item, index) => index}
@@ -215,7 +258,7 @@ const Weeks = ({ navigation, route }) => {
       </View>
    );
 };
-export default Weeks;
+export default WeekTopic;
 const styles = StyleSheet.create({
    //Check project repo for styles
    container: {
@@ -263,5 +306,13 @@ const styles = StyleSheet.create({
       height: '150%',
       width: '90%',
       backgroundColor: '#C1D5A4',
-   }
+   },
+   fabSave: {
+      position: 'absolute',
+      margin: 16,
+      left:-15,
+      bottom: -80,
+      backgroundColor: '#224B0C',
+      width:'100%',
+    },
 });

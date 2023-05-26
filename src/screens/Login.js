@@ -13,10 +13,10 @@ const Login = ({ navigation }) => {
       const data = await response.json();
       console.log("DATA", data)
       if (data.Role == "Student") {
-        navigation.navigate("StudentPanel", {user:data})
+        navigation.navigate("EnrolledCourses", {user:data})
       }
       else if (data.Role == "Teacher") {
-        navigation.navigate("Courses", {user:data})
+        navigation.navigate("AllocatedCourses", {user:data})
       }
     }
   }
@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
         style={styles.image}
       />
       <View>
-        <Text style={styles.biitLms}>BIIT LMS</Text>
+        <Text style={styles.biitLms}>Flip LMS</Text>
       </View>
       <View>
         <TextInput placeholder="username" style={styles.username}
