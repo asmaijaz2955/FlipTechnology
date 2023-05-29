@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, Dim
 import { WebView } from 'react-native-webview';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-const Videos = ({ route }) => {
+const Videos = ({ navigation,route }) => {
   // let lessonId = route.params.lessonId
   // let lessonId = route.params
   // console.log('params', lessonId)
@@ -103,7 +103,7 @@ const Videos = ({ route }) => {
   const handleQuizAttempt = () => {
     // handle the logic for when the quiz is attempted
     // navigate to the next screen
-    navigation.navigate('AttemtQuiz');
+    navigation.navigate('AttemptQuiz',{topicId: topicId,user:user});
   }
   return (
     <View style={styles.container}>

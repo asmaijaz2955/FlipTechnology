@@ -204,13 +204,13 @@ const WeekTopic = ({ navigation, route }) => {
                onTapClose={onMultiChange()}
                isMulti
             />
-            <FAB
+            {/* <FAB
           style={styles.fabSave}
           small
           label='Save'
           onPress={getTopics}
          color='white'
-        />
+        /> */}
          </View>
          {/* <View > */}
          {/* <Picker

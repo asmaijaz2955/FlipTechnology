@@ -31,13 +31,19 @@ const[lst,setlst]=useState([]);
 let courseId = route.params.courseId;
 useEffect(() => {
     getSection();
- }, [section])
+ }, [])
 const getSection = async () => {
     const response = await fetch(`${global.apiURL}teacher/getStudentBySection?section=${section}`)
     const courses = await response.json();
     console.log("std",courses);
     setlist(courses);
 };
+ // const getAllSections = async () => {
+    //   const response = await fetch(`${global.apiURL}teacher/getAllSections?`);
+    //   const sectionsData = await response.json();
+    //   console.log("Sections", sectionsData);
+    //   setSections(sectionsData);
+    // };
 const [refreshing, setRefreshing] = useState(false);
 const onRefresh = () => {
     setRefreshing(true);

@@ -1,115 +1,110 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+import { RadioButton, Button } from 'react-native-paper';
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
-import { Card, Button, CheckBox } from 'react-native-elements';
 
-const questions = [
-  {
-    question: 'What is the capital of France?',
-    options: ['Paris', 'London', 'Berlin', 'Madrid'],
-    answer: 'Paris'
-  },
-  {
-    question: 'What is the largest continent?',
-    options: ['Asia', 'Africa', 'North America', 'South America'],
-    answer: 'Asia'
-  },
-  // Add more questions here
-];
+const QuizQuestions = ({ navigation,route }) => {
+  const [quesList, setQuesList] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const [wrong, setWrong] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
+  let topicId=route.params.topicId;
+  let user=route.params.user;
+  let userId = user.userId;
+  console.log("userid",userId);
+  console.log("user",user);
+  console.log("topicid",topicId);
+  useEffect(() => {
+    getQuizByTopic();
+  }, []);
 
-const QuizScreen = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const [showResult, setShowResult] = useState(false);
-
-  const handleAnswerSelect = (option) => {
-    const updatedAnswers = [...userAnswers];
-    updatedAnswers[currentQuestion] = option;
-    setUserAnswers(updatedAnswers);
-  };
-
-  const handleQuizSubmit = () => {
-    setShowResult(true);
-  };
-
-  const handleRestartQuiz = () => {
-    setCurrentQuestion(0);
-    setUserAnswers([]);
-    setShowResult(false);
-  };
-
-  const calculateScore = () => {
-    let score = 0;
-    questions.forEach((question, index) => {
-      if (question.answer === userAnswers[index]) {
-        score++;
+  const getQuizByTopic = async () => {
+    try {
+      const response = await fetch(`${global.apiURL}student/getQuizByTopic?topicId=${topicId}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log(data);
+        setQuesList(data); // Assuming data is an array of questions
+      } else {
+        console.log('Not Found');
       }
-    });
-    return score;
+    } catch (e) {
+      console.log(e.toString());
+    }
+  };
+
+  const handleAnswer = () => {
+    const currentQuestion = quesList[index];
+    if (selectedOption === currentQuestion.CorrectOption) {
+      setCorrect((prevCorrect) => prevCorrect + 1);
+    } else {
+      setWrong((prevWrong) => prevWrong + 1);
+    }
+    setIndex((prevIndex) => prevIndex + 1);
+    setSelectedOption(null);
+    saveQuizAttempts();
+    if (index === quesList.length - 1) {
+      // Navigating back to the "Video" screen when questions have ended
+      navigation.goBack();
+    }
+  };
+const saveQuizAttempts = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "Qid": 2,
+  "Answer": selectedOption,
+  "StudentId": userId,
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+const response = await fetch(`${global.apiURL}student/SaveQuizAttempt`, requestOptions)
+const data = await response.json()
+console.log('data', data)
+  }
+  const renderQuestions = () => {
+    const question = quesList[index];
+    return (
+      <View style={{ padding: 8 }}>
+        <Text style={{ fontSize: 20 }}>{`Q no ${index + 1} ${question.Question}`}</Text>
+        <RadioButton.Group onValueChange={(value) => setSelectedOption(value)} value={selectedOption}>
+          <RadioButton.Item label={question.Option_A} value={question.Option_A} />
+          <RadioButton.Item label={question.Option_B} value={question.Option_B} />
+          <RadioButton.Item label={question.Option_C} value={question.Option_C} />
+          <RadioButton.Item label={question.Option_D} value={question.Option_D} />
+        </RadioButton.Group>
+        <Button mode="contained" onPress={handleAnswer} disabled={!selectedOption}>
+          Next
+        </Button>
+      </View>
+    );
+  };
+
+  const renderResultView = () => {
+    return (
+      <View style={{ padding: 8, justifyContent: 'center' }}>
+        <View style={{ height: 400, backgroundColor: 'white' }}>
+          {/* Remaining code for result view */}
+        </View>
+      </View>
+    );
   };
 
   return (
-    <View style={styles.container}>
-      {!showResult ? (
-        <Card>
-          <Text style={styles.question}>{questions[currentQuestion].question}</Text>
-          {questions[currentQuestion].options.map((option, index) => (
-            <CheckBox
-              key={index}
-              title={option}
-              checked={userAnswers[currentQuestion] === option}
-              onPress={() => handleAnswerSelect(option)}
-            />
-          ))}
-          <Button
-            title={currentQuestion === questions.length - 1 ? 'Submit' : 'Next'}
-            onPress={() => {
-              if (currentQuestion === questions.length - 1) {
-                handleQuizSubmit();
-              } else {
-                setCurrentQuestion(currentQuestion + 1);
-              }
-            }}
-          />
-        </Card>
-      ) : (
-        <Modal visible={showResult} animationType="fade" transparent>
-          <View style={styles.modalContainer}>
-            <Card>
-              <Text style={styles.resultText}>
-                You scored {calculateScore()} out of {questions.length}
-              </Text>
-              <Button title="Restart Quiz" onPress={handleRestartQuiz} />
-            </Card>
-          </View>
-        </Modal>
-      )}
+    <View style={{ flex: 1 }}>
+      <View style={{ backgroundColor: '#C1D5A4', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ color: 'green', fontSize: 20 }}>Question List</Text>
+      </View>
+      {index === quesList.length ? renderResultView() : renderQuestions()}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  question: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-  },
-  resultText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20
-  }
-});
-
-export default QuizScreen;
+export default QuizQuestions;

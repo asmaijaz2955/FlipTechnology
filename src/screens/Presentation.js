@@ -6,7 +6,9 @@ const Presentation=({navigation,route})=>{
     const [newItem, setNewItem] = useState('');
     let selectedItems = route.params.selectedItems;
     let courseId = route.params.courseId;
+    console.log("topicid",topicId);
     let user=route.params.user;
+    let userId = user.userId;
     const [selectedItem, setselectedItem] = useState('1');
     const [topic, setTopic] = useState([]);
     const [date, setDate] = useState([]);
@@ -31,13 +33,10 @@ var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
 var raw = JSON.stringify({
-  "studentId": [
-    "2018-ARID-001",
-    "2018-ARID-0345"
-  ],
-  "topicId": 1,
-  "date": "2023-05-21",
-  "t_id": 101,
+  "studentId":selectedItems,
+  "topicId": topicId,
+  "date": date,
+  "t_id": userId,
 });
 
 var requestOptions = {
@@ -64,9 +63,10 @@ return(
                     />
                 ))}
     </Picker>
+    <Text style={{color:'#224B0C',fontSize:20,left:40,    marginTop: 20}}>Date</Text>
     <TextInput placeholder="Date" style={{
       fontFamily: "roboto-regular", color: "#121212", height: 50, width: 300,
-      backgroundColor: "white", borderWidth: 1, borderColor: '#224B0C', marginTop: 30,left:40,position:'absolute'
+      backgroundColor: "white", borderWidth: 1, borderColor: '#224B0C', marginTop: 150,left:35,position:'absolute'
       }} value={date}
       onChangeText={text => setDate(text)} />
       <FAB
@@ -74,6 +74,7 @@ return(
           small
           label='Save'
           onPress={savePresentation}
+          color='white'
         />
 </View>
 );
@@ -91,23 +92,24 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     borderWidth: 1,
-    width: 270,
-    marginTop: 10,
+    width: 300,
+    marginTop: 30,
     height: 50,
     borderRadius: 20,
     paddingHorizontal: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    backgroundColor: "#076F65",
-    borderColor: '#076F65',
-    marginLeft: 7,
+    backgroundColor: "#C1D5A4",
+    borderColor: '#224B0C',
+    marginLeft: 12,
 },
 fabSave: {
   position: 'absolute',
   margin: 16,
-  left: 0,
+  left: 100,
   bottom: 0,
   backgroundColor: '#224B0C',
+  width:150
 }
 }
 );
