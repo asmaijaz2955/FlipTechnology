@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList } from 'react-native';
 import { FAB } from 'react-native-paper';
-
 const Evaluation = ({ navigation, route }) => {
   const [stdEvaluation, setStdEvaluation] = useState([]);
   const [marksList, setMarksList] = useState([]);
   let user = route.params.user;
   let id = user.userId;
-
+  let topicId=route.params.topicId;
+  console.log("topicId",topicId);
   useEffect(() => {
     getStudents();
   }, []);
 
   const getStudents = async () => {
-    const response = await fetch(`${global.apiURL}teacher/GetStudentForEvaluation?t_id=${id}`);
+    const response = await fetch(`${global.apiURL}teacher/GetStudentForEvaluation?topicID=${topicId}`);
     const data = await response.json();
     setStdEvaluation(data);
     setMarksList(Array(data.length).fill('')); // Initialize marksList with empty strings

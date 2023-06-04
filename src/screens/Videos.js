@@ -3,12 +3,18 @@ import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, Dim
 import { WebView } from 'react-native-webview';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-const Videos = ({ navigation,route }) => {
+import Ant from 'react-native-vector-icons/AntDesign';
+// import { Dimensions } from 'react-native';
+import Pdf from 'react-native-pdf';
+const Videos = ({ navigation, route }) => {
   // let lessonId = route.params.lessonId
   // let lessonId = route.params
   // console.log('params', lessonId)
   // let user = route.params.user
-  const {lessonId, user, topicId} = route.params;
+  const source = { uri: `http://192.168.165.251/FlipTech_Fyp/File/Assig3-Hifza-2984-BCS(8C).pdf`, cache: true };
+  const { lessonId, user, topicId } = route.params;
+  let userId = user.userId;
+  console.log("User", userId);
   console.log('user', topicId)
   const [showQuizModal, setShowQuizModal] = useState(false)
   const [selectedRating, setSelectedRating] = useState(0);
@@ -19,8 +25,13 @@ const Videos = ({ navigation,route }) => {
   const [videoId, setVideoId] = useState('');
   const [videoDataId, setvideoDataId] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [start, setStart] = useState(0)
-  const [end, setEnd] = useState(0)
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
+  const [cumulativeRating, setCumulativeRating] = useState(0);
+  const [views, setViews] = useState(40);
+  const now = new Date();
+  const formattedDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
   const getVideos = async () => {
     // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
@@ -57,31 +68,81 @@ const Videos = ({ navigation,route }) => {
   }, []);
   // useEffect(() => {
   //   // AsyncStorage.setItem('note', note);
-  // }, [note]);
-  useEffect(() => {
-    getVideos()
-  }, []);
 
+  useEffect(() => {
+    getVideos();
+    getCumulativeRating();
+    getViews();
+  }, []);
+  useEffect(() => {
+    if (videoDataId) {
+      getCumulativeRating();
+    }
+  }, [videoDataId]);
+  // }, [note]);
   const handleStarClick = async (rating) => {
     console.log(`Selected rating: ${rating}`);
-    // var raw = JSON.stringify({
-    //   "videoId": video.v_id,
-    //   "videoDataId": videoDataId,
-    //   "rate": rating,
-    //   "studentId": user.userId
-    // });
     var requestOptions = {
       method: 'POST',
       redirect: 'follow'
     };
-
-    fetch(`${global.apiURL}student/rate_video?videoId=${video.v_id}&videoDataId=${videoDataId}&rate=${rating}&studentId=${user.userId}`, requestOptions)
-      .then(response => response.text())
-      .then(result => console.log("response", result))
-      .catch(error => console.log('error', error));
+    const response = await fetch(`${global.apiURL}student/rate_video?videoId=${video.v_id}&videoDataId=${videoDataId}&rate=${rating}&studentId=${userId}`, requestOptions)
+    const data = await response.json()
+    console.log("JSON DATA", data)
     setSelectedRating(rating);
   };
+  const getCumulativeRating = async () => {
+    try {
+      console.log("getComulativeRating")
+      const response = await fetch(`${global.apiURL}student/getComulativeRating?videoDataId=${videoDataId}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("getComulativeRating", data)
+        if (data.length > 0) {
+          const sum = data.reduce((total, item) => total + item.rating, 0);
+          setCumulativeRating(sum);
+          setSelectedRating(sum)
+        }
+      }
+    } catch (error) {
+      console.log(error.toString(), "here");
+    }
+  };
+  const getViews = async () => {
+    try {
+      const response = await fetch(`${global.apiURL}student/getViews?videoId=${videoId}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("Views",data)
+        setViews(data[0].views);
+      }
+    } catch (error) {
+      console.log(error.toString());
+    }
+  };
+  const saveHistory = async () => {
+    try {
+      const response = await fetch(`${global.apiURL}/student/saveHistory`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentId: userId,
+          videoId: videoId,
+          date: formattedDate,
+          time: formattedTime,
+        }),
+      });
 
+      if (response.status === 200) {
+        console.log('History saved successfully');
+      }
+    } catch (error) {
+      console.log(error.toString());
+    }
+  };
   const handleNoteSave = async () => {
     console.log(note, video.v_data_id, video.v_id)
     if (note) {
@@ -103,7 +164,7 @@ const Videos = ({ navigation,route }) => {
   const handleQuizAttempt = () => {
     // handle the logic for when the quiz is attempted
     // navigate to the next screen
-    navigation.navigate('AttemptQuiz',{topicId: topicId,user:user});
+    navigation.navigate('AttemptQuiz', { topicId: topicId, user: user });
   }
   return (
     <View style={styles.container}>
@@ -121,25 +182,23 @@ const Videos = ({ navigation,route }) => {
         {[1, 2, 3, 4, 5].map((rating) => (
           <TouchableOpacity
             key={rating}
-            style={[
+            onPress={() => handleStarClick(rating)}
+          >
+            <Text style={[
               styles.ratingStar,
               {
                 color: rating <= selectedRating ? '#ffc107' : '#ccc'
               }
-            ]}
-            onPress={() => handleStarClick(rating)}
-          >
-            <Text>&#9733;</Text>
+            ]}>&#9733;</Text>
           </TouchableOpacity>
         ))}
       </View>
-
       <View style={styles.viewCount}>
         <View style={styles.eyeIcon}>
           <Text style={styles.eyeIconText}>👀</Text>
         </View>
         <View style={styles.viewCountText}>
-          <Text style={styles.viewCountNumber}>234 views</Text>
+          <Text style={styles.viewCountNumber}>Views: {views}</Text>
         </View>
       </View>
       <View>
@@ -153,9 +212,9 @@ const Videos = ({ navigation,route }) => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-            <Pressable style={styles.modalButton} onPress={handleQuizAttempt}>
-                  <Text style={styles.modalButtonText}>Attempt Quiz</Text>
-                </Pressable>
+              <Pressable style={styles.modalButton} onPress={handleQuizAttempt}>
+                <Text style={styles.modalButtonText}>Attempt Quiz</Text>
+              </Pressable>
             </View>
           </View>
         </Modal>
@@ -197,6 +256,24 @@ const Videos = ({ navigation,route }) => {
           ></FontAwesomeIcon></Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.pdfcontainer}>
+        <Pdf
+          trustAllCerts={false}
+          source={source}
+          onLoadComplete={(numberOfPages, filePath) => {
+            console.log(`Number of pages: ${numberOfPages}`);
+          }}
+          onPageChanged={(page, numberOfPages) => {
+            console.log(`Current page: ${page}`);
+          }}
+          onError={(error) => {
+            console.log(error);
+          }}
+          onPressLink={(uri) => {
+            console.log(`Link pressed: ${uri}`);
+          }}
+          style={styles.pdf} />
+      </View>
       <View style={styles.notesContainer}>
         <Text style={styles.notesTitle}>Notes</Text>
         <FlatList
@@ -210,6 +287,18 @@ const Videos = ({ navigation,route }) => {
 };
 
 const styles = StyleSheet.create({
+
+  pdfcontainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 25,
+  },
+  pdf: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: 200,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white'

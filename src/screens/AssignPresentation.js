@@ -29,9 +29,10 @@ const [toCheckBox, setToCheckBox] = useState(false);
 const[list,setlist]=useState([]);
 const[lst,setlst]=useState([]);
 let courseId = route.params.courseId;
+let user=route.params.user;
 useEffect(() => {
     getSection();
- }, [])
+ }, [section])
 const getSection = async () => {
     const response = await fetch(`${global.apiURL}teacher/getStudentBySection?section=${section}`)
     const courses = await response.json();
@@ -40,14 +41,14 @@ const getSection = async () => {
 };
  // const getAllSections = async () => {
     //   const response = await fetch(`${global.apiURL}teacher/getAllSections?`);
-    //   const sectionsData = await response.json();
+    //   const sectionsData = await response.json(); 
     //   console.log("Sections", sectionsData);
     //   setSections(sectionsData);
     // };
 const [refreshing, setRefreshing] = useState(false);
-const onRefresh = () => {
+const onRefresh = async () => {
     setRefreshing(true);
-    getSection();
+    await getSection();
     setRefreshing(false);
   };
 const handleCheckStudentToggle = (item) => {
@@ -65,12 +66,15 @@ const handleCheckStudentToggle = (item) => {
        
     }
 };
+const handlePickerChange = (currentSection) => {
+    setSetion(currentSection)
+}
 return (
  <View style={styles.container}>
 <Text style={styles.setdata}>List of Participants</Text>
 <Picker style={{backgroundColor: '#C1D5A4',left:30, width: 304}}
 selectedValue={section}
- onValueChange={currentSection => setSetion(currentSection)}>
+ onValueChange={handlePickerChange}>
  <Picker.Item label="BCS1A" value="BCS1A"/>
 <Picker.Item label="BCS1B" value="BCS1B" />
 <Picker.Item label="BCS1C" value="BCS1C" />
@@ -104,7 +108,7 @@ selectedValue={section}
           style={styles.fabSave}
           small
           label='Assign'
-          onPress={() => navigation.navigate('Presentation',{selectedItems,courseId})}
+          onPress={() => navigation.navigate('Presentation',{selectedItems,courseId,user})}
           color='white'
         />
  </View>

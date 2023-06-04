@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, ScrollView, FlatList, Pressable, Image } from "react-native";
-const EnrolledCourses = ({ navigation, route }) => {
+const AdminPanel = ({ navigation, route }) => {
    const [subjects, setsubjects] = useState([]);
    const [images, setimages] = useState([{ src: require('./Assets/Images/sub.png'), key: '1' }]);
    let user = route.params.user;
@@ -10,7 +10,7 @@ const EnrolledCourses = ({ navigation, route }) => {
       getAllSubjects();
    }, [])
    const getAllSubjects = async () => {
-      const response = await fetch(`${global.apiURL}student/getEnrollSubjects?userId=${user.Id}`)
+      const response = await fetch(`${global.apiURL}Hod/getAllCourses`)
       const courses = await response.json();
       console.log("course",courses)
       setsubjects(courses)
@@ -24,7 +24,7 @@ const EnrolledCourses = ({ navigation, route }) => {
             numColumns={2} // Set the number of columns
             columnWrapperStyle={styles.columnWrapper}
             renderItem={({ item }) => (
-               <Pressable onPress={() => navigation.navigate("WeekTopic", { user:user ,courseId: item.c_id })}>
+               <Pressable onPress={() => navigation.navigate("Topics", { user:user ,courseId: item.c_id })}>
                   <View style={styles.weekContainer}>
                      <Image source={images[0].src} style={styles.image} />
                      <Text style={styles.weekText}>{item.name}</Text>
@@ -57,28 +57,23 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: 20,
+      paddingHorizontal: 15,
       paddingVertical: 15,
-      gap:10,
+      gap:5,
       backgroundColor: '#C1D5A4',
-      marginHorizontal: 40,
+      marginHorizontal: 30,
       borderRadius: 10,
    },
    image: {
-      width: 50,
-      height: 50,
+      width: 90,
+      height: 80,
       borderRadius: 25,
    },
    weekText: {
       // paddingTop: 15,
-      fontSize: 6,
+      fontSize: 15,
       fontWeight: "bold",
-      // width: 350,
-      // height: 62,
-      // backgroundColor: `#C7E8CA`,
-      // marginTop: 30,
-      // marginLeft: 6
    }
 });
 
-export default EnrolledCourses;
+export default AdminPanel;

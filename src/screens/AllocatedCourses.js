@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
       fontSize: 54,
       left: 5,
       top: 15,
-      width: '145%', // Set the width of each item
+      width: '130%', // Set the width of each item
       height: 150, // Set the height of each item
       backgroundColor: '#C1D5A4',
       marginTop: 20,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
       padding: 9
    },
    image: {
-      width: 50,
+      width: 60,
       height: 50,
       borderRadius: 25,
    },

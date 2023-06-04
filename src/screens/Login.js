@@ -18,6 +18,9 @@ const Login = ({ navigation }) => {
       else if (data.Role == "Teacher") {
         navigation.navigate("AllocatedCourses", {user:data})
       }
+      else if (data.Role == "Director") {
+        navigation.navigate("AdminPanel", {user:data})
+      }
     }
   }
 

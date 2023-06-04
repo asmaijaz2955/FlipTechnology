@@ -4,21 +4,72 @@ import { Picker } from '@react-native-picker/picker';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { useRoute } from '@react-navigation/native';
 import { FAB, Provider } from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
+import { PermissionsAndroid } from 'react-native'
+import DocumentPicker from 'react-native-document-picker';
 const WeekTopics = ({ navigation }) => {
+   async function sendFileQuiz() {
+
+      if (Platform.OS === 'android') {
+         // Calling the permission function
+         const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+               title: 'Example App Camera Permission',
+               message: 'Example App needs access to your camera',
+            },
+         );
+         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // Permission Granted
+            selectFileQuiz();
+         } else {
+            // Permission Denied
+            alert('CAMERA Permission Denied');
+         }
+      } else {
+         selectFileQuiz();
+      }
+
+
+   }
+   const selectFileQuiz = async () => {
+
+      try {
+         const excelFile = await DocumentPicker.pick({
+
+         });
+
+         console.log(excelFile)
+
+
+         setFileQuiz(excelFile);
+         console.log('fieQuiz', fileQuiz);
+
+      } catch (error) {
+         console.log(error);
+      }
+   };
+   const [fileQuiz, setFileQuiz] = useState(null);
    const [currency, setCurrency] = useState('US Dollar');
    const [selectedItem, setselectedItem] = useState('1');
+   const [selectedItems, setselectedItems] = useState([]);
    const [topic, settopic] = useState([]);
+   const [presentationTopic, setPresentationTopic] = useState([]);
    const [modalVisible, setModalVisible] = useState(false);
    const [newItem, setNewItem] = useState('');
    const [session, setSession] = useState('');
+   const [isFABGroupOpen, setIsFABGroupOpen] = useState(false);
+   const [selectedTopics, setSelectedTopics] = useState([]);
    const route = useRoute();
-   let courseId = route.params.courseId
-   console.log("courseId", courseId)
-   let user = route.params.user
-   console.log('user', user)
+   let courseId = route.params.courseId;
+   console.log("courseId", courseId);
+   let user = route.params.user;
+   let userId = user.userId;
+   console.log('user', userId);
    useEffect(() => {
       getTopics();
       getSession();
+      getPresentationTopics();
    }, [selectedItem])
    const getTopics = async () => {
       console.log('Selected Item', selectedItem)
@@ -28,7 +79,16 @@ const WeekTopics = ({ navigation }) => {
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
-   }
+   };
+   const getPresentationTopics = async () => {
+      // console.log('Selected Item', selectedItem)
+      // console.log('CourseId', courseId)
+      // "http://192.168.0.105/FlipTech_Fyp/api/student/getTopics?courseId=1&week=6"
+      const response = await fetch(`${global.apiURL}teacher/GetTopicsAssignedForPresentation?t_id=${userId}&week=${selectedItem}`)
+      const data = await response.json()
+      console.log("Topics", data)
+      setPresentationTopic(data)
+   };
    const getSession = async () => {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
@@ -46,12 +106,28 @@ const WeekTopics = ({ navigation }) => {
       // console.log("Teacher ID/Course ID", teacherId, courseId)
       // const 
       navigation.navigate("UploadVideo", { teacherId, courseId })
-   }
+   };
+   // const navigateToEvaluation = (topicId) => {
+   //    navigation.navigate("Evaluation", { topicId });
+   // };
    const renderItem = ({ item, index }) => {
+      const onPress = () => {
+         // data: item
+      }
       return (
          <View style={styles.weekContainer} key={index}>
+            <CheckBox
+               style={styles.checkBox}
+               value={selectedTopics.includes(item.topic_name)}
+               onValueChange={() => {
+                  const updatedTopics = selectedTopics.includes(item.topic_name)
+                     ? selectedTopics.filter(topic => topic !== item.topic_name)
+                     : [...selectedTopics, item.topic_name];
+                  setSelectedTopics(updatedTopics);
+               }}
+            />
             <Text style={styles.weekText}>{item.topic_name}</Text>
-            <TouchableOpacity style={{ backgroundColor: '#C1D5A4', height: '150%', fontWeight: "bold", color: "#5D9C59", }}
+            <TouchableOpacity style={{ backgroundColor: '#C1D5A4', height: '110%', fontWeight: "bold", color: "#5D9C59", }}
                onPress={() => setModalVisible(true)}>
                <Text style={{ color: '#224B0C' }}> Add Quiz</Text>
             </TouchableOpacity>
@@ -62,27 +138,32 @@ const WeekTopics = ({ navigation }) => {
                onRequestClose={() => {
                   setModalVisible(!modalVisible);
                }}>
-                  <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-               <Text style={{color: '#224B0C',fontSize: 20}}>Quiz Title</Text>      
-        <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C'}} value={newItem}
-          onChangeText={text => setNewItem(text)}/>
-           <Text style={{color: '#224B0C',fontSize: 20}}>Total Marks</Text>      
-        <TextInput style={{ fontFamily: "roboto-regular",color: "#121212", height: 50,width: 250,
-         backgroundColor: "white",borderWidth: 1,borderColor: '#224B0C', marginTop:-0}} value={newItem}
-          onChangeText={text => setNewItem(text)}/>
-              <View style={styles.modalButtonContainer}>
-                <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz", { session: session })}>
-                  <Text style={styles.modalButtonText}>Save</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
+               <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                     <Text style={{ color: '#224B0C', fontSize: 20 }}>Quiz Title</Text>
+                     <TextInput style={{
+                        fontFamily: "roboto-regular", color: "#121212", height: 50, width: 250,
+                        backgroundColor: "white", borderWidth: 1, borderColor: '#224B0C'
+                     }} value={newItem}
+                        onChangeText={text => setNewItem(text)} />
+                     <Text style={{ color: '#224B0C', fontSize: 20 }}>Total Marks</Text>
+                     <TextInput style={{
+                        fontFamily: "roboto-regular", color: "#121212", height: 50, width: 250,
+                        backgroundColor: "white", borderWidth: 1, borderColor: '#224B0C', marginTop: -0
+                     }} value={newItem}
+                        onChangeText={text => setNewItem(text)} />
+                     <View style={styles.modalButtonContainer}>
+                        <Pressable style={styles.modalButton} onPress={() => navigation.navigate("Quiz", { session: session })}>
+                           <Text style={styles.modalButtonText}>Save</Text>
+                        </Pressable>
+                     </View>
+                  </View>
+               </View>
                {/* Modal content */}
             </Modal>
          </View>
       )
+
    }
    return (
       <View style={styles.container}>
@@ -156,31 +237,82 @@ const WeekTopics = ({ navigation }) => {
             keyExtractor={(item, index) => index}
             renderItem={renderItem}
          />
-         <View style={{ flexDirection: 'row',  justifyContent: 'space-between', padding: 15 }}>
-            <FAB
-               style={styles.fab}
-               small
-               icon="plus"
-               onPress={navigateToUploadVideo}
-               color='white'
+         <View>
+            <Text style={{ color: '#224B0C', left: 20, fontSize: 20 }}>Presentation</Text>
+            <FlatList
+               data={presentationTopic}
+               keyExtractor={(item, index) => index}
+               renderItem={({ item }) => {
+                  return (
+                     <Pressable onPress={() => navigation.navigate("Evaluation", { user: user, topicId: item.topic_id })}>
+                        <View style={styles.weekContainer1} >
+                           <Text style={styles.weekText1}>{item.topic_name}</Text>
+                        </View>
+                     </Pressable>
+                  )
+               }}
             />
-            <FAB
-               style={styles.fab}
-               small
-               label='Assign'
-               onPress={() => navigation.navigate('AssignPresentation', { courseId, user })}
-               color='white'
-            />
-            <FAB
-               style={styles.fab}
-               small
-               label='Evalute'
-               onPress={() => navigation.navigate('Evaluation', {user})}
-               color='white'
+         </View>
+         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
+            {/* <FAB.Group
+      open={isFABGroupOpen}
+      icon={isFABGroupOpen ? 'close' : 'plus'}
+      onPress={() => setIsFABGroupOpen(!isFABGroupOpen)
+        
+      }
+      actions={[
+         {
+            icon: 'upload',
+            label: 'Upload Video',
+            onPress: navigateToUploadVideo,
+         },
+         {
+            icon: 'assignment',
+            label: 'Assign',
+            onPress: () => navigation.navigate('AssignPresentation', { courseId, user }),
+         },
+         {
+            icon: 'file',
+            label: 'Send File Quiz',
+            onPress: sendFileQuiz(),
+         },
+      ]}
+      onStateChange={({ open }) => setIsFABGroupOpen(open)}
+      color="white"
+      style={styles.fabGroup}
+   /> */}
+            <FAB.Group
+               open={isFABGroupOpen}
+               icon={isFABGroupOpen ? 'close' : 'plus'}
+               onPress={() => {
+                  setIsFABGroupOpen(!isFABGroupOpen);
+                  sendFileQuiz(); // Call the sendFileQuiz function
+               }}
+               actions={[
+                  {
+                     icon: 'upload',
+                     label: 'Upload Video',
+                     onPress: navigateToUploadVideo,
+                  },
+                  {
+                     icon: 'assignment',
+                     label: 'Assign',
+                     onPress: () => navigation.navigate('AssignPresentation', { courseId, user }),
+                  },
+                  {
+                     icon: 'file',
+                     label: 'Send File Quiz',
+                     onPress: sendFileQuiz, // Remove the parentheses from sendFileQuiz
+                  },
+               ]}
+               onStateChange={({ open }) => setIsFABGroupOpen(open)}
+               color="white"
+               style={styles.fabGroup}
             />
 
          </View>
       </View>
+
    );
 };
 export default WeekTopics;
@@ -197,25 +329,33 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       marginVertical: 15,
+      borderColor: '#224B0C',
+      paddingHorizontal: 20,
+   },
+   weekContainer1: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 15,
       borderColor: '#224B0C'
    },
-   image: {
-      width: 31,
-      height: 27,
-      marginLeft: 292
-   },
-   Search: {
-      fontSize: 36,
-      marginTop: 5,
-      height: '6%',
-      width: '70%',
-      paddingHorizontal: 115,
-      backgroundColor: `#C7E8CA`
+   checkBox: {
+      marginRight: 10,
+      backgroundColor: '#C1D5A4',
+      left: 10,
+      height: '110%'
    },
    weekText: {
       fontSize: 16,
-      height: '150%',
+      height: '110%',
       width: '70%',
+      backgroundColor: '#C1D5A4',
+      borderColor: '#224B0C'
+   },
+   weekText1: {
+      fontSize: 16,
+      height: '150%',
+      width: '92%',
       backgroundColor: '#C1D5A4',
       borderColor: '#224B0C'
    },
@@ -268,20 +408,6 @@ const styles = StyleSheet.create({
       backgroundColor: '#224B0C',
       color: 'white'
    },
-   fabSave: {
-      position: 'absolute',
-      margin: 16,
-      left: 15,
-      bottom: 0,
-      backgroundColor: '#224B0C',
-   },
-   fab1: {
-      position: 'absolute',
-      margin: 16,
-      left: 10,
-      bottom: 0,
-      backgroundColor: '#224B0C',
-   },
    saveButton: {
       backgroundColor: '#224B0C',
       padding: 10,
@@ -294,4 +420,5 @@ const styles = StyleSheet.create({
       color: '#FFF',
       fontWeight: 'bold',
    },
+
 });
