@@ -5,7 +5,7 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { useRoute } from '@react-navigation/native';
 import { FAB, Provider } from 'react-native-paper';
 import CheckBox from '@react-native-community/checkbox';
-const Topics = ({ navigation }) => {
+const CommonTopics = ({ navigation }) => {
     const [currency, setCurrency] = useState('US Dollar');
     const [selectedItem, setselectedItem] = useState('1');
     const [selectedItems, setselectedItems] = useState([]);
@@ -14,15 +14,12 @@ const Topics = ({ navigation }) => {
     const route = useRoute();
     let courseId = route.params.courseId;
     console.log("courseId", courseId);
-    let user = route.params.user;
-    let userId = user.userId;
-    console.log('user', userId);
     useEffect(() => {
         getAllTopics();
     }, [])
     const getAllTopics = async () => {
         console.log('CourseId', courseId)
-        const response = await fetch(`${global.apiURL}Hod/getAllTopics?courseId=${courseId}`)
+        const response = await fetch(`${global.apiURL}student/GetCommonTopicsByCourse?c_id=${courseId}`)
         const data = await response.json()
         console.log("JSON DATA", data)
         settopic(data)
@@ -35,22 +32,15 @@ const Topics = ({ navigation }) => {
             renderItem={({ item }) => (
                 <Pressable onPress={() => navigation.navigate("PlayVideo", { lessonId: item.LessonId, user: user, topicId: item.Topic_id })}>
                     <View style={styles.weekContainer}>
-                        <Text style={styles.weekText}>{item.TopicName}</Text>
+                        <Text style={styles.weekText}>{item.topic_name}</Text>
                     </View>
                 </Pressable>
             )}
         />
-    < FAB
-        style={styles.fabSave}
-        small
-        label='Detail Topics'
-        onPress={() => navigation.navigate('DetailedTopics', { courseId })}
-        color='white'
-    />
     </View>
     );     
 }
-export default Topics;
+export default CommonTopics;
 const styles = StyleSheet.create({
     //Check project repo for styles
     container: {

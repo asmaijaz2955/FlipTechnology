@@ -8,47 +8,47 @@ import CheckBox from '@react-native-community/checkbox';
 import { PermissionsAndroid } from 'react-native'
 import DocumentPicker from 'react-native-document-picker';
 const WeekTopics = ({ navigation }) => {
-   async function sendFileQuiz() {
+   // async function sendFileQuiz() {
 
-      if (Platform.OS === 'android') {
-         // Calling the permission function
-         const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            {
-               title: 'Example App Camera Permission',
-               message: 'Example App needs access to your camera',
-            },
-         );
-         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            // Permission Granted
-            selectFileQuiz();
-         } else {
-            // Permission Denied
-            alert('CAMERA Permission Denied');
-         }
-      } else {
-         selectFileQuiz();
-      }
-
-
-   }
-   const selectFileQuiz = async () => {
-
-      try {
-         const excelFile = await DocumentPicker.pick({
-
-         });
-
-         console.log(excelFile)
+   //    if (Platform.OS === 'android') {
+   //       // Calling the permission function
+   //       const granted = await PermissionsAndroid.request(
+   //          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+   //          {
+   //             title: 'Example App Camera Permission',
+   //             message: 'Example App needs access to your camera',
+   //          },
+   //       );
+   //       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+   //          // Permission Granted
+   //          selectFileQuiz();
+   //       } else {
+   //          // Permission Denied
+   //          alert('CAMERA Permission Denied');
+   //       }
+   //    } else {
+   //       selectFileQuiz();
+   //    }
 
 
-         setFileQuiz(excelFile);
-         console.log('fieQuiz', fileQuiz);
+   // }
+   // const selectFileQuiz = async () => {
 
-      } catch (error) {
-         console.log(error);
-      }
-   };
+   //    try {
+   //       const excelFile = await DocumentPicker.pick({
+
+   //       });
+
+   //       console.log(excelFile)
+
+
+   //       setFileQuiz(excelFile);
+   //       console.log('fieQuiz', fileQuiz);
+
+   //    } catch (error) {
+   //       console.log(error);
+   //    }
+   // };
    const [fileQuiz, setFileQuiz] = useState(null);
    const [currency, setCurrency] = useState('US Dollar');
    const [selectedItem, setselectedItem] = useState('1');
@@ -70,6 +70,7 @@ const WeekTopics = ({ navigation }) => {
       getTopics();
       getSession();
       getPresentationTopics();
+      console.log('topisx id  ...', selectedItems);
    }, [selectedItem])
    const getTopics = async () => {
       console.log('Selected Item', selectedItem)
@@ -99,6 +100,29 @@ const WeekTopics = ({ navigation }) => {
       const data = await response.json()
       console.log("JSON DATA", data)
       setSession(data)
+   };
+   const saveCommonTopics = async () => {
+      const topicIds = selectedItems.map(topic => topic.topic_id);
+      console.log('tt', topicIds);
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify([
+         {
+            "t_id": userId,
+            "topic_id": topicIds[0],
+            "c_id": courseId
+         }
+      ]);
+
+      var requestOptions = {
+         method: 'POST',
+         headers: myHeaders,
+         body: raw,
+         redirect: 'follow'
+      };
+      const response = await fetch(`${global.apiURL}teacher/SaveCoveredTopics`, requestOptions)
+      const data = await response.json()
+      console.log('response from JSON', data)
    }
    const navigateToUploadVideo = () => {
       const teacherId = user.userId
@@ -118,12 +142,12 @@ const WeekTopics = ({ navigation }) => {
          <View style={styles.weekContainer} key={index}>
             <CheckBox
                style={styles.checkBox}
-               value={selectedTopics.includes(item.topic_name)}
+               value={selectedItems.includes(item)}
                onValueChange={() => {
-                  const updatedTopics = selectedTopics.includes(item.topic_name)
-                     ? selectedTopics.filter(topic => topic !== item.topic_name)
-                     : [...selectedTopics, item.topic_name];
-                  setSelectedTopics(updatedTopics);
+                  const updatedItems = selectedItems.includes(item)
+                     ? selectedItems.filter(selectedItem => selectedItem !== item)
+                     : [...selectedItems, item];
+                  setselectedItems(updatedItems);
                }}
             />
             <Text style={styles.weekText}>{item.topic_name}</Text>
@@ -174,22 +198,22 @@ const WeekTopics = ({ navigation }) => {
             style={styles.picker}
          >
             {/* <ScrollView style={{flex: 1, height: '100%', width: "100%"}}> */}
-            <Picker.Item label="Week 1" value="week1" />
-            <Picker.Item label="Week 2" value="week2" />
-            <Picker.Item label="Week 3" value="week3" />
-            <Picker.Item label="Week 4" value="week4" />
-            <Picker.Item label="Week 5" value="week5" />
-            <Picker.Item label="Week 6" value="week6" />
-            <Picker.Item label="Week 7" value="week7" />
-            <Picker.Item label="Week 8" value="week8" />
-            <Picker.Item label="Week 9" value="week9" />
-            <Picker.Item label="Week 10" value="week10" />
-            <Picker.Item label="Week 11" value="week11" />
-            <Picker.Item label="Week 12" value="week12" />
-            <Picker.Item label="Week 13" value="week13" />
-            <Picker.Item label="Week 14" value="week14" />
-            <Picker.Item label="Week 15" value="week15" />
-            <Picker.Item label="Week 16" value="week16" />
+            <Picker.Item label="Week 1" value="1" />
+            <Picker.Item label="Week 2" value="2" />
+            <Picker.Item label="Week 3" value="3" />
+            <Picker.Item label="Week 4" value="4" />
+            <Picker.Item label="Week 5" value="5" />
+            <Picker.Item label="Week 6" value="6" />
+            <Picker.Item label="Week 7" value="7" />
+            <Picker.Item label="Week 8" value="8" />
+            <Picker.Item label="Week 9" value="9" />
+            <Picker.Item label="Week 10" value="10" />
+            <Picker.Item label="Week 11" value="11" />
+            <Picker.Item label="Week 12" value="12" />
+            <Picker.Item label="Week 13" value="13" />
+            <Picker.Item label="Week 14" value="14" />
+            <Picker.Item label="Week 15" value="15" />
+            <Picker.Item label="Week 16" value="16" />
             {/* </ScrollView> */}
          </Picker>
          <View style={{ marginVertical: 10 }}></View>
@@ -237,6 +261,10 @@ const WeekTopics = ({ navigation }) => {
             keyExtractor={(item, index) => index}
             renderItem={renderItem}
          />
+         <TouchableOpacity style={styles.button}
+            onPress={saveCommonTopics}>
+            <Text style={styles.save}>Save</Text>
+         </TouchableOpacity>
          <View>
             <Text style={{ color: '#224B0C', left: 20, fontSize: 20 }}>Presentation</Text>
             <FlatList
@@ -253,35 +281,35 @@ const WeekTopics = ({ navigation }) => {
                }}
             />
          </View>
-         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
-            {/* <FAB.Group
-      open={isFABGroupOpen}
-      icon={isFABGroupOpen ? 'close' : 'plus'}
-      onPress={() => setIsFABGroupOpen(!isFABGroupOpen)
-        
-      }
-      actions={[
-         {
-            icon: 'upload',
-            label: 'Upload Video',
-            onPress: navigateToUploadVideo,
-         },
-         {
-            icon: 'assignment',
-            label: 'Assign',
-            onPress: () => navigation.navigate('AssignPresentation', { courseId, user }),
-         },
-         {
-            icon: 'file',
-            label: 'Send File Quiz',
-            onPress: sendFileQuiz(),
-         },
-      ]}
-      onStateChange={({ open }) => setIsFABGroupOpen(open)}
-      color="white"
-      style={styles.fabGroup}
-   /> */}
+         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15, bottom: 35 }}>
             <FAB.Group
+               open={isFABGroupOpen}
+               icon={isFABGroupOpen ? 'close' : 'plus'}
+               onPress={() => setIsFABGroupOpen(!isFABGroupOpen)
+
+               }
+               actions={[
+                  {
+                     icon: 'upload',
+                     label: 'Upload Video',
+                     onPress: navigateToUploadVideo,
+                  },
+                  {
+                     icon: 'assignment',
+                     label: 'Assign',
+                     onPress: () => navigation.navigate('AssignPresentation', { courseId, user }),
+                  },
+                  {
+                     icon: 'file',
+                     label: 'Send File Quiz',
+                     // onPress: sendFileQuiz(),
+                  },
+               ]}
+               onStateChange={({ open }) => setIsFABGroupOpen(open)}
+               color="white"
+               style={styles.fabGroup}
+            />
+            {/* <FAB.Group
                open={isFABGroupOpen}
                icon={isFABGroupOpen ? 'close' : 'plus'}
                onPress={() => {
@@ -308,7 +336,7 @@ const WeekTopics = ({ navigation }) => {
                onStateChange={({ open }) => setIsFABGroupOpen(open)}
                color="white"
                style={styles.fabGroup}
-            />
+            /> */}
 
          </View>
       </View>
@@ -407,6 +435,26 @@ const styles = StyleSheet.create({
    fab: {
       backgroundColor: '#224B0C',
       color: 'white'
+   },
+   button: {
+      alignSelf: 'center',
+      width: 150,
+      height: 65,
+      backgroundColor: '#224B0C',
+      borderWidth: 1,
+      borderColor: "#C7E8CA",
+      borderRadius: 26,
+      marginTop: 20,
+      marginLeft: 10,
+
+   },
+   save: {
+      fontSize: 22,
+      alignItems: 'center',
+      fontWeight: "bold",
+      color: "white",
+      marginTop: 13,
+      marginLeft: 40
    },
    saveButton: {
       backgroundColor: '#224B0C',

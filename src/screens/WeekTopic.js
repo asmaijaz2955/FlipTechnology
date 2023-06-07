@@ -82,7 +82,7 @@ const WeekTopic = ({ navigation, route }) => {
    const [selectedTeams, setSelectedTeams] = useState([]);
    // let user = route.params.user
    // let courseId = route.params.courseId
-   const {user, courseId} = route.params
+   const { user, courseId } = route.params
    console.log("courseId", courseId, "user", user)
 
    // useEffect(() => {
@@ -91,7 +91,7 @@ const WeekTopic = ({ navigation, route }) => {
    useEffect(() => {
       getTopics();
    }, [selectedTeams])
-   
+
    function onMultiChange() {
       return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
    }
@@ -106,12 +106,12 @@ const WeekTopic = ({ navigation, route }) => {
       console.log('selected teams', selectedTeams)
       let week = []
       const containsAll = selectedTeams.find(obj => obj.id === "All");
-      if(containsAll){
-         week = ['1', '2', '3','4','5','6','7','8','9','10','11','12','13','14','15','16']
+      if (containsAll) {
+         week = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
       }
-      else{
+      else {
          const weekItems = selectedTeams.map(obj => obj.id);
-         week = weekItems         
+         week = weekItems
       }
       console.log('asdas', week)
 
@@ -134,7 +134,7 @@ const WeekTopic = ({ navigation, route }) => {
          headers: myHeaders,
          body: raw,
          redirect: 'follow'
-      };  
+      };
       const response = await fetch(`${global.apiURL}student/getTopics`, requestOptions)
       // // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
       // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
@@ -179,8 +179,6 @@ const WeekTopic = ({ navigation, route }) => {
 
    return (
       <View style={styles.container}>
-
-
          <View style={{ flexDirection: 'row', backgroundColor: 'white', borderWidth: 1, borderColor: '#224B0C', padding: 5, margin: 15 }}>
             <TextInput
                style={{ flex: 1, marginLeft: 40, height: 40 }}
@@ -194,7 +192,7 @@ const WeekTopic = ({ navigation, route }) => {
                />
             </TouchableOpacity>
          </View >
-         <View style={{ margin: 25,bottom:60 }}>
+         <View style={{ margin: 25, bottom: 60 }}>
             <View style={{ height: 40 }} />
             <SelectBox
                label="Select Week"
@@ -204,13 +202,13 @@ const WeekTopic = ({ navigation, route }) => {
                onTapClose={onMultiChange()}
                isMulti
             />
-            {/* <FAB
+            <FAB
           style={styles.fabSave}
           small
-          label='Save'
-          onPress={getTopics}
+          label='Common Topics'
+          onPress={() => navigation.navigate('CommonTopics', { courseId })}
          color='white'
-        /> */}
+        />
          </View>
          {/* <View > */}
          {/* <Picker
@@ -253,8 +251,13 @@ const WeekTopic = ({ navigation, route }) => {
                )
             }}
          />
-
          {/* </View> */}
+         <View style={{ justifyContent: 'center', alignItems: "center", right: 60 }}>
+        <TouchableOpacity style={styles.button}
+         onPress={() => navigation.navigate('CommonTopics', { courseId })}>
+          <Text style={styles.login}>Login</Text>
+        </TouchableOpacity>
+      </View>
       </View>
    );
 };
@@ -271,7 +274,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 10, 
+      marginVertical: 10,
    },
    image: {
       width: 31,
@@ -310,9 +313,29 @@ const styles = StyleSheet.create({
    fabSave: {
       position: 'absolute',
       margin: 16,
-      left:-15,
+      left: -15,
       bottom: -80,
       backgroundColor: '#224B0C',
-      width:'100%',
+      width: '100%',
+   },
+   button: {
+      alignSelf:'center',
+      width: 150,
+      height: 65,
+      backgroundColor: '#224B0C',
+      borderWidth: 1,
+      borderColor: "#C7E8CA",
+      borderRadius: 26,
+      marginTop: 34,
+      marginLeft: 140,
+  
+    },
+    login: {
+      fontSize: 22,
+      alignItems: 'center',
+      fontWeight: "bold",
+      color: "white",
+      marginTop: 13,
+      marginLeft: 40
     },
 });

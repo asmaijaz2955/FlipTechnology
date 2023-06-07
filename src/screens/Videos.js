@@ -28,10 +28,12 @@ const Videos = ({ navigation, route }) => {
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(0);
   const [cumulativeRating, setCumulativeRating] = useState(0);
-  const [views, setViews] = useState(40);
+  const [views, setViews] = useState(0);
   const now = new Date();
   const formattedDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+  console.log("format",formattedDate);
+  console.log("format",formattedTime);
   const getVideos = async () => {
     // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
@@ -41,6 +43,7 @@ const Videos = ({ navigation, route }) => {
       console.log('asdasdasds', topicVideo)
       // setvideoDataId(data[0].v_data_id)
       setvideoDataId(topicVideo.v_data_id)
+      setVideoId(topicVideo.v_id)
       setStudentId()
       // setVideo(data[0])
       setVideo(topicVideo)
@@ -68,17 +71,23 @@ const Videos = ({ navigation, route }) => {
   }, []);
   // useEffect(() => {
   //   // AsyncStorage.setItem('note', note);
-
   useEffect(() => {
     getVideos();
     getCumulativeRating();
     getViews();
+    saveHistory();
   }, []);
   useEffect(() => {
     if (videoDataId) {
       getCumulativeRating();
     }
   }, [videoDataId]);
+
+  useEffect(() => {
+    if (videoId) {
+      getViews();
+    }
+  }, [videoId]);
   // }, [note]);
   const handleStarClick = async (rating) => {
     console.log(`Selected rating: ${rating}`);
@@ -110,11 +119,12 @@ const Videos = ({ navigation, route }) => {
   };
   const getViews = async () => {
     try {
+      console.log('url', `${global.apiURL}student/getViews?videoId=${videoId}`)
       const response = await fetch(`${global.apiURL}student/getViews?videoId=${videoId}`);
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Views",data)
-        setViews(data[0].views);
+        console.log("Views", data)
+        setViews(data);
       }
     } catch (error) {
       console.log(error.toString());

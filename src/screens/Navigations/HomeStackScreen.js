@@ -20,6 +20,8 @@ import PDF from "../PDF";
 import AdminPanel from "../AdminPanel";
 import Topics from "../Topics";
 import PlayVideo from "../PlayVideo";
+import DetailedTopics from "../DetailedTopics";
+import CommonTopics from "../CommonTopics";
 const HomeStack = createNativeStackNavigator();
 const HomeStackScreen = ({ navigation }) => {
   return (
@@ -54,6 +56,8 @@ const HomeStackScreen = ({ navigation }) => {
       <HomeStack.Screen name="AdminPanel" component={AdminPanel} />
       <HomeStack.Screen name="Topics" component={Topics} />
       <HomeStack.Screen name="PlayVideo" component={PlayVideo} />
+      <HomeStack.Screen name="DetailedTopics" component={DetailedTopics} />
+      <HomeStack.Screen name="CommonTopics" component={CommonTopics} />
     </HomeStack.Navigator>
   );
 }
