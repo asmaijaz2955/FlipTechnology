@@ -11,8 +11,10 @@ TextInput,
 import { Picker } from '@react-native-picker/picker';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 const SetSchedule=()=> {   
-const [Tasbih, setTasbih] = useState('اللهأكبر');
- const [Type, setType] = useState('Weekly');
+const [subject, setSubject] = useState('');
+const [teacher, setTeacher] = useState('');
+const [topics, setTopics] = useState('');
+const [rating, setRating] = useState('');
 return (
  <View style={styles.container}>
     <View style={{flexDirection:'row',backgroundColor: 'white',borderWidth:1,borderColor: '#224B0C', alignItems:'center', padding:5, margin:15}}>
@@ -23,25 +25,40 @@ return (
             />
    </TouchableOpacity ></View>
 <Picker
-selectedValue={Tasbih}
- onValueChange={currentTasbih => setTasbih(currentTasbih)}  style={styles.picker}>
- <Picker.Item label="DBMS "value="DBMS" />
-<Picker.Item label="CC"value="CC"/>
-<Picker.Item label="NA" value="NA" />
+selectedValue={subject}
+ onValueChange={currentSubject => setSubject(currentSubject)}  style={styles.picker}>
+ <Picker.Item label="PS "value="PS" />
+<Picker.Item label="PP"value="PP"/>
+<Picker.Item label="Islamiat" value="Islamiat" />
 </Picker>
  <Picker
-selectedValue={Type}
-onValueChange={currentType => setType(currentType)}  style={styles.picker1}>
- <Picker.Item label="Nauman" value="Nauman"/>
-<Picker.Item label="Naseer" value="Naseer" />
-<Picker.Item label="Zeeshan" value="Zeeshan" />
+selectedValue={teacher}
+onValueChange={currentTeacher => setTeacher(currentTeacher)}  style={styles.picker1}>
+ <Picker.Item label="Khalid" value="Khalid"/>
+<Picker.Item label="Ihsan" value="Ihsan" />
+<Picker.Item label="Umer" value="Umer" />
 </Picker>
 <Picker
-selectedValue={Type}
-onValueChange={currentType => setType(currentType)}  style={styles.picker2}>
+selectedValue={topics}
+onValueChange={currentTopic => setTopics(currentTopic)}  style={styles.picker2}>
+ <Picker.Item label="What is Flip" value="What is Flip"/>
+<Picker.Item label="Introduction to Pakistan Studies" value="Introduction to Pakistan Studies" />
+<Picker.Item label="Significance of Pakistan Studies" value="Significance of Pakistan Studies" />
+<Picker.Item label="Location of Pakistan" value="Location of Pakistan " />
+<Picker.Item label="Strategic importance" value="Strategic importance" />
+<Picker.Item label="Neighbouring Countries" value="Neighbouring Countries" />
+<Picker.Item label="Pakistan and India" value="Pakistan and India" />
+<Picker.Item label="Pakistan and Afghanistan" value="Pakistan and Afghanistan" />
+
+</Picker>
+<Picker
+selectedValue={rating}
+onValueChange={currentRating => setRating(currentRating)}  style={styles.picker3}>
  <Picker.Item label="1" value="1"/>
 <Picker.Item label="2" value="2" />
 <Picker.Item label="3" value="3" />
+<Picker.Item label="4" value="4" />
+<Picker.Item label="5" value="5" />
 </Picker>
 <TouchableOpacity style={styles.button2}>
 <Text style={styles.login}>Search</Text>
@@ -58,10 +75,11 @@ const styles = StyleSheet.create({
  button2: {
  width: 144,
 height: 65,
+position:'absolute',
  backgroundColor: '#224B0C',
  borderRadius: 21,
- top: 165,
- marginLeft: 110
+ marginLeft: 110,
+marginTop:600
  },
  login: {
     fontSize: 22,
@@ -92,7 +110,13 @@ height: 65,
     width: '90%',
     alignSelf:'center',
     backgroundColor: '#C1D5A4'
- }
+ },
+ picker3: {
+   bottom: -155,
+   width: '90%',
+   alignSelf:'center',
+   backgroundColor: '#C1D5A4'
+}
 });
 
 export default SetSchedule;

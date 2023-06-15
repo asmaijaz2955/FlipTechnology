@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
    },
    weekText: {
       // paddingTop: 15,
-      fontSize: 6,
+      fontSize: 12,
       fontWeight: "bold",
       // width: 350,
       // height: 62,

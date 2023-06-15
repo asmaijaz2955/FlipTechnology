@@ -40,11 +40,18 @@ const Topics = ({ navigation }) => {
                 </Pressable>
             )}
         />
-    < FAB
+    {/* < FAB
         style={styles.fabSave}
         small
         label='Detail Topics'
         onPress={() => navigation.navigate('DetailedTopics', { courseId })}
+        color='white'
+    /> */}
+     < FAB
+        style={styles.fabSave}
+        small
+        label='Common Topics'
+        onPress={() => navigation.navigate('CommonTopics', { courseId })}
         color='white'
     />
     </View>

@@ -47,32 +47,28 @@ const styles = StyleSheet.create({
       // borderColor: "#000000"
    },
    columnWrapper: {
-      justifyContent: 'space-between', // Set the alignment between each row
-      paddingHorizontal: 10, // Set the horizontal padding between each item
-      paddingVertical: 10, // Set the vertical padding between each item
+      justifyContent: 'flex-start', // Set the alignment between each row
+      marginVertical:20, // Set the vertical padding between each item
    },
    weekContainer: {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: 54,
-      left: 5,
-      top: 15,
-      width: '130%', // Set the width of each item
-      height: 150, // Set the height of each item
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      gap:10,
       backgroundColor: '#C1D5A4',
-      marginTop: 20,
-      marginLeft: 9,
+      marginHorizontal: 40,
       borderRadius: 10,
-      padding: 9
    },
    image: {
-      width: 60,
+      width: 50,
       height: 50,
       borderRadius: 25,
    },
    weekText: {
-      paddingTop: 15,
+      // paddingTop: 15,
+      fontSize: 12,
       fontWeight: "bold",
       // width: 350,
       // height: 62,

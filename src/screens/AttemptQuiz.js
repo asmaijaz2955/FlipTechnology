@@ -3,18 +3,19 @@ import { View, Text } from 'react-native';
 import { RadioButton, Button } from 'react-native-paper';
 
 
-const QuizQuestions = ({ navigation,route }) => {
+const QuizQuestions = ({ navigation, route }) => {
   const [quesList, setQuesList] = useState([]);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  let topicId=route.params.topicId;
-  let user=route.params.user;
+  const qidList = quesList.map((question) => question.QId);
+  let topicId = route.params.topicId;
+  let user = route.params.user;
   let userId = user.userId;
-  console.log("userid",userId);
-  console.log("user",user);
-  console.log("topicid",topicId);
+  console.log("userid", userId);
+  console.log("user", user);
+  console.log("topicid", topicId);
   useEffect(() => {
     getQuizByTopic();
   }, []);
@@ -34,7 +35,7 @@ const QuizQuestions = ({ navigation,route }) => {
     }
   };
 
-  const handleAnswer = () => {
+  const handleAnswer = async (question_id) => {
     const currentQuestion = quesList[index];
     if (selectedOption === currentQuestion.CorrectOption) {
       setCorrect((prevCorrect) => prevCorrect + 1);
@@ -43,31 +44,32 @@ const QuizQuestions = ({ navigation,route }) => {
     }
     setIndex((prevIndex) => prevIndex + 1);
     setSelectedOption(null);
-    saveQuizAttempts();
+    await saveQuizAttempts(question_id);
     if (index === quesList.length - 1) {
       // Navigating back to the "Video" screen when questions have ended
       navigation.goBack();
     }
   };
-const saveQuizAttempts = async () => {
+  const saveQuizAttempts = async (question_id) => {
+    console.log('asdasd', question_id, selectedOption, userId)
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-var raw = JSON.stringify({
-  "Qid": 2,
-  "Answer": selectedOption,
-  "StudentId": userId,
-});
+    var raw = JSON.stringify([{
+      "Qid": question_id,
+      "Answer": selectedOption,
+      "StudentId": userId,
+    }]);
 
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: raw,
-  redirect: 'follow'
-};
-const response = await fetch(`${global.apiURL}student/SaveQuizAttempt`, requestOptions)
-const data = await response.json()
-console.log('data', data)
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    const response = await fetch(`${global.apiURL}student/SaveQuizAttempt`, requestOptions)
+    const data = await response.json()
+    console.log('data', data)
   }
   const renderQuestions = () => {
     const question = quesList[index];
@@ -80,7 +82,7 @@ console.log('data', data)
           <RadioButton.Item label={question.Option_C} value={question.Option_C} />
           <RadioButton.Item label={question.Option_D} value={question.Option_D} />
         </RadioButton.Group>
-        <Button mode="contained" onPress={handleAnswer} disabled={!selectedOption}>
+        <Button mode="contained" onPress={() => handleAnswer(question.QId)} disabled={!selectedOption}>
           Next
         </Button>
       </View>

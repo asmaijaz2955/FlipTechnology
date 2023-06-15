@@ -5,6 +5,9 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
 import { FAB, Provider } from 'react-native-paper';
+import { PermissionsAndroid } from 'react-native'
+import DocumentPicker from 'react-native-document-picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
 // import { Button } from 'react-native-elements'
 const K_OPTIONS = [
    {
@@ -77,21 +80,95 @@ const K_OPTIONS = [
    },
 ]
 const WeekTopic = ({ navigation, route }) => {
+   const [filename, setFileName] = useState();
+   const [fileQuiz, setFileQuiz] = useState(null);
+   const [presId, setPresId] = useState();
+
+   useEffect(() => {
+      if (fileQuiz) {
+         setFileName(fileQuiz.name);
+      }
+   }, [fileQuiz]);
+
+   async function sendFileQuiz() {
+      if (Platform.OS === 'android') {
+         // Calling the permission function
+         const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+               title: 'Example App Storage Permission',
+               message: 'Example App needs access to your storage',
+            },
+         );
+         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // Permission Granted
+            selectFileQuiz();
+         } else {
+            // Permission Denied
+            alert('Storage Permission Denied');
+         }
+      } else {
+         selectFileQuiz();
+      }
+   }
+
+   const selectFileQuiz = async () => {
+      try {
+         const videoFile = await DocumentPicker.pick({
+            type: [DocumentPicker.types.video],
+         });
+
+         console.log(videoFile);
+
+         setFileQuiz(videoFile);
+         console.log('fileQuiz', fileQuiz);
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const uploadFileQuiz = async () => {
+      console.log('selected file ---------------------', fileQuiz[0])
+
+      const fileData = new FormData();
+      fileData.append('file', {
+         uri: fileQuiz[0].uri,
+         type: fileQuiz[0].type,
+         name: fileQuiz[0].name,
+      });
+      console.log({ presId });
+      fileData.append('p_id', presId);
+      var requestOptions = {
+         method: 'POST',
+         body: fileData,
+         redirect: 'follow'
+      };
+
+      const response = await fetch(`${global.apiURL}/student/UploadVideoPresentation`, requestOptions)
+      const data = await response.json()
+      console.log('RES', data)
+   };
+   const [selectedFile, setSelectedFile] = useState(null);
    const [selectedItem, setselectedItem] = useState('1');
    const [topic, settopic] = useState([]);
+   const [presentation, setPresentation] = useState([]);
    const [selectedTeams, setSelectedTeams] = useState([]);
    // let user = route.params.user
-   // let courseId = route.params.courseId
-   const { user, courseId } = route.params
-   console.log("courseId", courseId, "user", user)
-
+   let courseId = route.params.courseId
+   // const { user, courseId } = route.params
+   // console.log("courseId", courseId, "user", user)
+   let user = route.params.user;
+   let userId = user.userId;
    // useEffect(() => {
    //    getTopics();
    // }, [selectedItem])
    useEffect(() => {
       getTopics();
    }, [selectedTeams])
-
+   useEffect(() => {
+      getPresentation();
+   }, []
+   )
    function onMultiChange() {
       return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
    }
@@ -99,21 +176,21 @@ const WeekTopic = ({ navigation, route }) => {
    function onChange() {
       return (val) => setSelectedTeams(val)
    }
-
+   let week = []
+   const containsAll = selectedTeams.find(obj => obj.id === "All");
+   if (containsAll) {
+      week = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
+   }
+   else {
+      const weekItems = selectedTeams.map(obj => obj.id);
+      week = weekItems
+   }
    const getTopics = async () => {
       console.log('Selected Item', selectedItem)
       console.log('CourseId', courseId)
       console.log('selected teams', selectedTeams)
-      let week = []
-      const containsAll = selectedTeams.find(obj => obj.id === "All");
-      if (containsAll) {
-         week = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
-      }
-      else {
-         const weekItems = selectedTeams.map(obj => obj.id);
-         week = weekItems
-      }
       console.log('asdas', week)
+      setselectedItem(week)
 
       // let week = [selectedItem]
 
@@ -136,13 +213,37 @@ const WeekTopic = ({ navigation, route }) => {
          redirect: 'follow'
       };
       const response = await fetch(`${global.apiURL}student/getTopics`, requestOptions)
-      // // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
+      // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${week}`)
       // const response = await fetch(`${global.apiURL}student/getTopics?courseId=${courseId}&week=${selectedItem}`)
       const data = await response.json()
       console.log("JSON DATA", data)
       settopic(data)
-   }
+   };
+   const getPresentation = async () => {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+         "s_id": userId,
+         "week": [       //  selectedTeams.map((obj) => obj.id)
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
+         ]
+      });
 
+      var requestOptions = {
+         method: 'POST',
+         headers: myHeaders,
+         body: raw,
+         redirect: 'follow'
+      };
+      const response = await fetch(`${global.apiURL}student/GetAssignedPresentationTime`, requestOptions)
+      const data = await response.json()
+      console.log(" Pres DATA", data)
+      setPresentation(data)
+      const mappedArray = data.map(obj => obj.p_id);
+      setPresId(mappedArray);
+      // Output
+      console.log(mappedArray);
+   }
    // const getTopics = async () => {
    //    console.log('Selected Item', selectedItem)
    //    console.log('CourseId', courseId)
@@ -176,7 +277,30 @@ const WeekTopic = ({ navigation, route }) => {
    //    console.log("JSON DATA", data)
    //    settopic(data)
    // }
+   const renderItem = ({ item }) => {
+      // Split the date string at the "T" character to get only the date portion
+      const dateParts = item.p_date.split('T');
+      const date = dateParts[0];
 
+      return (
+         <View style={{ padding: 16 }}>
+            <Text style={{ color: '#224B0C', left: 7, fontSize: 20 }}>Presentation</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.topic_name}</Text>
+            <Text style={{ fontSize: 16, marginTop: 8 }}>
+               {item.marks
+                  ? `Marks: ${item.marks}`
+                  : 'Marks not assigned'}
+            </Text>
+            <Text style={{ fontSize: 16, marginTop: 8 }}>Date: {date}</Text>
+            <TouchableOpacity onPress={sendFileQuiz}>
+               <Icon style={{ fontSize: 30, marginLeft: 250 }} name="file-video-o" type="font-awesome" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={uploadFileQuiz}>
+               <Icon style={{ fontSize: 30, marginTop: -30, marginLeft: 300 }} name="upload" type="font-awesome" />
+            </TouchableOpacity>
+         </View>
+      );
+   };
    return (
       <View style={styles.container}>
          <View style={{ flexDirection: 'row', backgroundColor: 'white', borderWidth: 1, borderColor: '#224B0C', padding: 5, margin: 15 }}>
@@ -202,13 +326,6 @@ const WeekTopic = ({ navigation, route }) => {
                onTapClose={onMultiChange()}
                isMulti
             />
-            <FAB
-          style={styles.fabSave}
-          small
-          label='Common Topics'
-          onPress={() => navigation.navigate('CommonTopics', { courseId })}
-         color='white'
-        />
          </View>
          {/* <View > */}
          {/* <Picker
@@ -251,13 +368,20 @@ const WeekTopic = ({ navigation, route }) => {
                )
             }}
          />
+         <View>
+            <FlatList
+               data={presentation}
+               renderItem={renderItem}
+               keyExtractor={(item) => item.topic_id.toString()}
+            />
+         </View>
          {/* </View> */}
          <View style={{ justifyContent: 'center', alignItems: "center", right: 60 }}>
-        <TouchableOpacity style={styles.button}
-         onPress={() => navigation.navigate('CommonTopics', { courseId })}>
-          <Text style={styles.login}>Login</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={styles.button}
+               onPress={() => navigation.navigate('CommonTopics', { courseId })}>
+               <Text style={styles.login}>Common Topics</Text>
+            </TouchableOpacity>
+         </View>
       </View>
    );
 };
@@ -271,6 +395,12 @@ const styles = StyleSheet.create({
       // borderColor: "#000000"
    },
    weekContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 10,
+   },
+   weekContainer1: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -310,6 +440,18 @@ const styles = StyleSheet.create({
       width: '90%',
       backgroundColor: '#C1D5A4',
    },
+   weekText1: {
+      fontSize: 16,
+      height: '150%',
+      width: '90%',
+      backgroundColor: '#C1D5A4',
+   },
+   weekText2: {
+      fontSize: 16,
+      height: '150%',
+      width: '90%',
+      backgroundColor: '#C1D5A4',
+   },
    fabSave: {
       position: 'absolute',
       margin: 16,
@@ -319,8 +461,8 @@ const styles = StyleSheet.create({
       width: '100%',
    },
    button: {
-      alignSelf:'center',
-      width: 150,
+      alignSelf: 'center',
+      width: 240,
       height: 65,
       backgroundColor: '#224B0C',
       borderWidth: 1,
@@ -328,14 +470,14 @@ const styles = StyleSheet.create({
       borderRadius: 26,
       marginTop: 34,
       marginLeft: 140,
-  
-    },
-    login: {
+
+   },
+   login: {
       fontSize: 22,
       alignItems: 'center',
       fontWeight: "bold",
       color: "white",
       marginTop: 13,
-      marginLeft: 40
-    },
+      marginLeft: 25
+   },
 });

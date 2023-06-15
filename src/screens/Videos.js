@@ -3,15 +3,14 @@ import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, Dim
 import { WebView } from 'react-native-webview';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-import Ant from 'react-native-vector-icons/AntDesign';
-// import { Dimensions } from 'react-native';
+import YoutubePlayer from "react-native-youtube-iframe";// import { Dimensions } from 'react-native';
 import Pdf from 'react-native-pdf';
 const Videos = ({ navigation, route }) => {
   // let lessonId = route.params.lessonId
   // let lessonId = route.params
   // console.log('params', lessonId)
   // let user = route.params.user
-  const source = { uri: `http://192.168.165.251/FlipTech_Fyp/File/Assig3-Hifza-2984-BCS(8C).pdf`, cache: true };
+  // const source = { uri: `http://192.168.165.251/FlipTech_Fyp/File/Assig3-Hifza-2984-BCS(8C).pdf`, cache: true };
   const { lessonId, user, topicId } = route.params;
   let userId = user.userId;
   console.log("User", userId);
@@ -23,6 +22,7 @@ const Videos = ({ navigation, route }) => {
   const [video, setVideo] = useState({});
   const [studentId, setStudentId] = useState('');
   const [videoId, setVideoId] = useState('');
+  const [file_path, setFilePath] = useState('');
   const [videoDataId, setvideoDataId] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [start, setStart] = useState(0);
@@ -32,14 +32,18 @@ const Videos = ({ navigation, route }) => {
   const now = new Date();
   const formattedDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-  console.log("format",formattedDate);
-  console.log("format",formattedTime);
+  console.log("format", formattedDate);
+  console.log("format", formattedTime);
   const getVideos = async () => {
     // console.log('lesson id', lessonId)
     const response = await fetch(`${global.apiURL}student/getVideos?lessonId=${lessonId}`)
     response.json().then(async data => {
       // console.log('DATA Video', data)
+      console.table('DATA Video', data)
       const topicVideo = data.find(d => d.topic_id === topicId)
+      const lessonFilePath = topicVideo ? topicVideo.lesson_file_path : "\"\"";
+      setFilePath(lessonFilePath)
+      console.log('lesson_file_path:', lessonFilePath);
       console.log('asdasdasds', topicVideo)
       // setvideoDataId(data[0].v_data_id)
       setvideoDataId(topicVideo.v_data_id)
@@ -179,6 +183,19 @@ const Videos = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.videoContainer}>
+        {/* {video && (
+        <YoutubePlayer
+          videoId={video.url}
+          height={300}
+          play={true}
+          onChangeState={event => console.log(event)}
+          onReady={() => console.log("ready")}
+          onError={e => console.log(e)}
+          onPlaybackQualityChange={q => console.log(q)}
+          volume={50}
+          playbackRate={1}
+        />
+      )} */}
         <WebView
           // source={{ uri: 'https://www.youtube.com/embed/wOhLyP-SAn0?start=120' }}
           source={{ uri: `${video.url}?start=${start}&end=${end}` }}
@@ -186,6 +203,7 @@ const Videos = ({ navigation, route }) => {
         // source={{ uri: video.url }}
         // style={styles.video}
         />
+
       </View>
 
       <View style={styles.ratingContainer}>
@@ -269,7 +287,10 @@ const Videos = ({ navigation, route }) => {
       <View style={styles.pdfcontainer}>
         <Pdf
           trustAllCerts={false}
-          source={source}
+          source={{
+            // uri: `${global.apiURL}student/GetFile?fileName=~/Content/CC-WK-13-Lec-25-26.pdf`,
+            uri: `${global.apiURL}student/GetFile?fileName=${file_path}`,
+          }}
           onLoadComplete={(numberOfPages, filePath) => {
             console.log(`Number of pages: ${numberOfPages}`);
           }}
@@ -282,7 +303,9 @@ const Videos = ({ navigation, route }) => {
           onPressLink={(uri) => {
             console.log(`Link pressed: ${uri}`);
           }}
-          style={styles.pdf} />
+          style={styles.pdf}
+        />
+
       </View>
       <View style={styles.notesContainer}>
         <Text style={styles.notesTitle}>Notes</Text>
