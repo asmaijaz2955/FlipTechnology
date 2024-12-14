@@ -1,34 +1,35 @@
 import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text,Image } from "react-native";
-const ListofNotes = ({ navigation}) => {
+const StudentPresenation = ({ navigation}) => {
     return(
         <View style={styles.container}>
             <View>
             <Text style={{fontSize:20,fontWeight:"bold",color:"black"}}>
-                Derivatives,Exercise 1.1</Text>
+                Syed Usman  Hassan</Text>
             </View>
             <View>
             <Text style={{fontSize:20,fontWeight:"bold",color:"black"}}>
-                Derivatives,Exercise 1.1</Text>
+                Hifza Nisar</Text>
             </View>
             <View>
             <Text style={{fontSize:20,fontWeight:"bold",color:"black"}}>
-                Derivatives,Exercise 1.1</Text>
+                Muhammad Usman</Text>
             </View>
             <View>
             <Text style={{fontSize:20,fontWeight:"bold",color:"black"}}>
-                Derivatives,Exercise 1.1</Text>
+                Zeeshan Ahmed</Text>
             </View>
             <View>
             <Text style={{fontSize:20,fontWeight:"bold",color:"black"}}>
-                Derivatives,Exercise 1.1</Text>
+                Muhammad Noman</Text>
             </View>
         </View>
+            
     );}
     const styles = StyleSheet.create({
         container: {
            top: 40,
            
-        },
-    });
-    export default ListofNotes;
+        }
+});
+    export default StudentPresenation;

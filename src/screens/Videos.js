@@ -5,6 +5,8 @@ import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommun
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import YoutubePlayer from "react-native-youtube-iframe";// import { Dimensions } from 'react-native';
 import Pdf from 'react-native-pdf';
+import CheckBox from '@react-native-community/checkbox';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const Videos = ({ navigation, route }) => {
   // let lessonId = route.params.lessonId
   // let lessonId = route.params
@@ -29,6 +31,9 @@ const Videos = ({ navigation, route }) => {
   const [end, setEnd] = useState(0);
   const [cumulativeRating, setCumulativeRating] = useState(0);
   const [views, setViews] = useState(0);
+  const [list, setlist] = useState([]);
+  const [lst, setlst] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const now = new Date();
   const formattedDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
@@ -168,13 +173,49 @@ const Videos = ({ navigation, route }) => {
       setModalVisible(!modalVisible);
     }
   };
-  const renderNoteItem = ({ item }) => {
-    return (
-      <View style={styles.noteContainer}>
-        <Text style={styles.noteText}>{item.notes}</Text>
-      </View>
+  const handleCheckStudentToggle = (item) => {
+    const selectedIndex = selectedItems.findIndex((selectedItem) => selectedItem === item);
+
+    if (selectedIndex >= 0) {
+      // the item was already selected, so remove it from the list
+      setSelectedItems((prevSelectedItems) =>
+        prevSelectedItems.filter((selectedItem) => selectedItem !== item)
+      );
+    } else {
+      // add the new item to the list of selected items
+      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, item]);
+      console.log("lst", selectedItems);
+
+    }
+  };
+  // const renderNoteItem = ({ item }) => {
+  //   return (
+  //     <View style={styles.noteContainer}>
+  //       <Text style={styles.noteText}>{item.notes}</Text>
+  //     </View>
+  //   );
+  // };
+  const handleToggleCheckbox = (n_id) => {
+    setNotes((prevData) =>
+      prevData.map((item) =>
+        item.n_id === n_id ? { ...item, checked: !item.checked } : item
+      )
     );
   };
+  const handleShare = (item) => {
+    // Implement the logic to navigate to the next screen with the selected n_id
+    navigation.navigate('PDF', { n_id: item.n_id });
+  }
+  const renderItem = ({ item }) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <CheckBox
+        value={item.checked}
+        onValueChange={() => handleToggleCheckbox(item.n_id)}
+      />
+      <Text>{item.notes}</Text>
+    </View>
+  );
+
   const handleQuizAttempt = () => {
     // handle the logic for when the quiz is attempted
     // navigate to the next screen
@@ -309,11 +350,20 @@ const Videos = ({ navigation, route }) => {
       </View>
       <View style={styles.notesContainer}>
         <Text style={styles.notesTitle}>Notes</Text>
-        <FlatList
+
+        {/* <FlatList
           data={notes}
           renderItem={renderNoteItem}
           keyExtractor={(item, index) => index.toString()}
+        /> */}
+        <FlatList
+          data={notes}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.n_id.toString()}
         />
+        <TouchableOpacity onPress={handleShare}>
+        <Icon style={{color: '#224B0C',left:290}} name="share" size={20} />
+      </TouchableOpacity>
       </View>
     </View>
   );
